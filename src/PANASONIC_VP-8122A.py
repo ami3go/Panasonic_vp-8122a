@@ -16,10 +16,38 @@ USER_REQUESTED_POINTS = 1000
     ## Asking for zero (0) points, a negative number of points, fewer than 100 points, or a non-integer number of points (100.1 -> error, but 100. or 100.0 is ok) will result in an error, specifically -222,"Data out of range"
 
 ## Initialization constants
-INSTRUMENT_VISA_ADDRESS = '' # Get this from Keysight IO Libraries Connection Expert
+INSTRUMENT_VISA_ADDRESS = 'USB0::0x03EB::0x2065::HP0.87300MZ_AP20.0DB_EMOF_COOF_CO0_AP50_MS01_AM30.::INSTR' # Get this from Keysight IO Libraries Connection Expert
     ## Note: sockets are not supported in this revision of the script (though it is possible), and PyVisa 1.8 does not support HiSlip, nor do these scopes.
     ## Note: USB transfers are generally fastest.
     ## Video: Connecting to Instruments Over LAN, USB, and GPIB in Keysight Connection Expert: https://youtu.be/sZz8bNHX5u4
+
+# any read retrun the status string devided by space 
+# FR0.87300MZ 
+# AP20.0DB 
+# EMOF 
+# COON 
+# CO0.0 
+# AP50 
+# MS01 
+# AM40.0 
+# AMON 
+# AMT1 
+# FM40.0 
+# FMOF 
+# FMT1 
+# MS46PC 
+# PR0 
+# PL0.0 
+# PLOF 
+# SCOF 
+# NPOF 
+# DR30 
+# AS0 
+# NT0.20 
+# P1D0 
+# P2D0
+
+
 
 GLOBAL_TOUT =  10 # IO time out in milliseconds
 
