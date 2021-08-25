@@ -124,11 +124,23 @@ class com_interface:
         self.send(self.cmd.am.set.val(30))
         self.send(self.cmd.am.on())
 
+        # Set amplitude to 20 dBuV
+        output_level = "AP20.0DB"
+
+        # Set modulation mode to mono
+        modulation_mode = "MS01"
+
         # Turn on internal modulator at 1 kHz
+        # Could also use external
         self.send(self.cmd.am.set1kHz())
 
-        # Set amplitude to 20 dBuV
-        #self.send(self.cmd.am.set.)
+        # Set Frequency to 531 Hz (according to the specific measurement)
+        frequency = "FR0.531MZ"
+
+        # Set output impedance to 50 ohm
+        output_impendace = "AP50"
+
+
 
 
 
