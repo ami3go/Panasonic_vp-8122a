@@ -125,7 +125,8 @@ class com_interface:
         self.send(self.cmd.am.on())
 
         # Set amplitude to 20 dBuV
-        output_level = "AP20.0DB"
+        #output_level = "AP20.0DB"
+        self.send(self.cmd.output.set_level_dBm(20.0))
 
         # Set modulation mode to mono
         modulation_mode = "MS01"
@@ -138,7 +139,9 @@ class com_interface:
         frequency = "FR0.531MZ"
 
         # Set output impedance to 50 ohm
-        output_impendace = "AP50"
+        #output_impendace = "AP50"
+        self.send(self.cmd.output.set_imp_50R())
+
 
 
 
@@ -248,7 +251,7 @@ class storage:
         self.pilot_signal = on_off_set("PL", 0, 19.9)
         self.total_fm_deviation = dig_param3("FT", 0, 402)
         self.composite_sign_out_level = dig_param3("LV", 0, 9990)
-
+        self.output = output("AP")
 
 
 
@@ -266,6 +269,36 @@ class modulation(on_off, t1_t4_ext):
         self.cmd = self.prefix
         self.prefix = self.cmd
         self.set = dig_param3(self.prefix, min, max)
+
+
+class output(on_off):
+    def __init__(self, prefix):
+        self.prefix = prefix
+        self.cmd = self.prefix
+        self.prefix = self.cmd
+
+    def set_imp_50R(self):
+        return self.prefix + " 50"
+
+    def set_imp_75R(self):
+        return self.prefix + " 75"
+
+    def set_level_dBm(self, value):
+        value = range_check(value, -133.0, 19.0, "dBm value")
+        return f'{self.cmd} {value}DM'
+
+    def set_level_dBuV(self, value):
+        value = range_check(value, -26.0, 126.0, "dBuV value")
+        return f'{self.cmd} {value}DB'
+
+    def set_level_mV(self, value):
+        value = range_check(value, 0.000050, 2000, "mV value")
+        return f'{self.cmd} {value}MV'
+
+    def set_level_uV(self, value):
+        value = range_check(value, 0.050, 2000000, "uV value")
+        return f'{self.cmd} {value}UV'
+
 
 
 if __name__ == '__main__':
@@ -289,5 +322,14 @@ if __name__ == '__main__':
     print(cmd.total_fm_deviation.val(100))
     print(cmd.composite_sign_out_level.val(500))
     print(cmd.am.set.val(30))
-    inst = com_interface()
-    inst.init()
+    print(cmd.output.off())
+    print(cmd.output.on())
+    print(cmd.output.set_imp_50R())
+    print(cmd.output.set_imp_75R())
+    print(cmd.output.set_level_dBm(20))
+
+
+
+    # inst = com_interface()
+    # inst.init()
+
