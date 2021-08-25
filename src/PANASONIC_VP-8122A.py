@@ -129,29 +129,24 @@ class com_interface:
         self.send(self.cmd.output.set_level_dBm(20.0))
 
         # Set modulation mode to mono
-        modulation_mode = "MS01"
+        #modulation_mode = "MS01"
+        self.send(self.cmd.main_and_sub_ch.MONO_INT())
+
 
         # Turn on internal modulator at 1 kHz
         # Could also use external
         self.send(self.cmd.am.set1kHz())
 
         # Set Frequency to 531 Hz (according to the specific measurement)
-        frequency = "FR0.531MZ"
-
+        #frequency = "FR0.531MZ"
+        self.send(self.cmd.freq.set_MHz(0.531))
         # Set output impedance to 50 ohm
         #output_impendace = "AP50"
         self.send(self.cmd.output.set_imp_50R())
 
 
-
-
-
-
     def disconnect(self):
         self.send(self.cmd.go_to_local.str())
-
-    def reboot(self):
-        self.send(self.cmd.reboot.str())
 
 
 ##################################################################
@@ -252,6 +247,10 @@ class storage:
         self.total_fm_deviation = dig_param3("FT", 0, 402)
         self.composite_sign_out_level = dig_param3("LV", 0, 9990)
         self.output = output("AP")
+        self.freq = frequency("FR")
+        self.main_and_sub_ch = main_and_sub_ch()
+
+
 
 
 
@@ -300,6 +299,61 @@ class output(on_off):
         return f'{self.cmd} {value}UV'
 
 
+class frequency:
+    def __init__(self, prefix):
+        self.prefix = prefix
+        self.cmd = self.prefix
+        self.prefix = self.cmd
+
+    def set_MHz(self, value):
+        value = range_check(value, 0.01000, 280.00000, "freq in MHz value")
+        return f'{self.cmd} {value}MZ'
+
+    def set_kHz(self, value):
+        value = range_check(value, 10.00000, 280000.00, "dBuV value")
+        return f'{self.cmd} {value}KZ'
+
+
+class main_and_sub_ch:
+    def __init__(self):
+        pass
+
+    def OFF(self):
+        return "MS 00"
+
+    def MONO_INT(self):
+        return "MS 01"
+
+    def L_eq_R_INT(self):
+        return "MS 02"
+
+    def L_INT(self):
+        return "MS 03"
+
+    def R_INT(self):
+        return "MS 04"
+
+    def L_eq_minusR_INT(self):
+        return "MS 05"
+
+    def MONO_EXT(self):
+        return "MS 11"
+
+    def L_eq_R_EXT(self):
+        return "MS 12"
+
+    def L_EXT(self):
+        return "MS 13"
+
+    def R_EXT(self):
+        return "MS 14"
+
+    def L_eq_minusR_EXT(self):
+        return "MS 15"
+
+    def L_R_EXT(self):
+        return "MS 17"
+
 
 if __name__ == '__main__':
 
@@ -327,7 +381,10 @@ if __name__ == '__main__':
     print(cmd.output.set_imp_50R())
     print(cmd.output.set_imp_75R())
     print(cmd.output.set_level_dBm(20))
-
+    print(cmd.freq.set_kHz(1500))
+    print(cmd.freq.set_MHz(150))
+    print(cmd.main_and_sub_ch.OFF())
+    print(cmd.main_and_sub_ch.MONO_INT())
 
 
     # inst = com_interface()
