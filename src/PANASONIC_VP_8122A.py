@@ -158,16 +158,16 @@ class str3:
 
 
 class dig_param3:
-    def __init__(self, prefix, min, max):
+    def __init__(self, prefix, min, max, ending=""):
         self.prefix = prefix
         self.cmd = self.prefix
         self.max = max
         self.min = min
+        self.ending = ending
 
     def val(self, count=0):
         count = range_check(count, self.min, self.max, "MAX count")
-        txt = f'{self.cmd} {count}'
-        return txt
+        return f'{self.cmd} {count}{self.ending}'
 
 
 # class on_off:
@@ -229,7 +229,7 @@ class on_off_set:
         return self.prefix + " OF"
 
 
-
+#main class with high level key function list
 class storage:
     def __init__(self):
         self.cmd = None
@@ -247,6 +247,8 @@ class storage:
         self.neg_peak_clipper = on_off("NP")
         self.fm_stereo_pre_emphasis = fm_stereo_pre_emphasis()
 
+# below are low level classes:
+#
 
 class control_output(on_off, up_down):
     def __init__(self, prefix):
@@ -298,6 +300,7 @@ class frequency:
         self.prefix = prefix
         self.cmd = self.prefix
         self.prefix = self.cmd
+        self.Mhz = dig_param3(self.prefix, 0.01000, 280.00000, "MZ")
 
     def set_MHz(self, value):
         value = range_check(value, 0.01000, 280.00000, "freq in MHz value")
@@ -394,12 +397,14 @@ if __name__ == '__main__':
     print(cmd.output.set_level_dBm(20))
     print(cmd.freq.set_kHz(1500))
     print(cmd.freq.set_MHz(150))
+    print(cmd.freq.Mhz.val(150))
     print(cmd.main_and_sub_ch.OFF())
     print(cmd.main_and_sub_ch.MONO_INT())
     print(cmd.neg_peak_clipper.on())
     print(cmd.neg_peak_clipper.off())
     print(cmd.fm_stereo_pre_emphasis.OFF())
     print(cmd.fm_stereo_pre_emphasis.set_50uS())
+
     # inst = com_interface()
     # inst.init()
 
