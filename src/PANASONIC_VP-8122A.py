@@ -1,6 +1,6 @@
-# import pyvisa # PyVisa info @ http://PyVisa.readthedocs.io/en/stable/
-import serial.tools.list_ports
-import serial
+import pyvisa # PyVisa info @ http://PyVisa.readthedocs.io/en/stable/
+#import serial.tools.list_ports
+#import serial
 import time
 
 
@@ -16,12 +16,12 @@ USER_REQUESTED_POINTS = 1000
     ## Asking for zero (0) points, a negative number of points, fewer than 100 points, or a non-integer number of points (100.1 -> error, but 100. or 100.0 is ok) will result in an error, specifically -222,"Data out of range"
 
 ## Initialization constants
-INSTRUMENT_VISA_ADDRESS = 'USB0::0x03EB::0x2065::HP0.87300MZ_AP20.0DB_EMOF_COOF_CO0_AP50_MS01_AM30.::INSTR' # Get this from Keysight IO Libraries Connection Expert
+INSTRUMENT_VISA_ADDRESS = 'USB0::0x03EB::0x2065::GPIB_02_55137303031351900211::INSTR' # Get this from Keysight IO Libraries Connection Expert
     ## Note: sockets are not supported in this revision of the script (though it is possible), and PyVisa 1.8 does not support HiSlip, nor do these scopes.
     ## Note: USB transfers are generally fastest.
     ## Video: Connecting to Instruments Over LAN, USB, and GPIB in Keysight Connection Expert: https://youtu.be/sZz8bNHX5u4
 
-# any read retrun the status string devided by space 
+# any read rerun the status string divided by space
 # FR0.87300MZ 
 # AP20.0DB 
 # EMOF 
@@ -78,17 +78,17 @@ class com_interface:
 
     def init(self):
         rm_list = self.rm.list_resources()
+
         i = 0
         for item in rm_list:
-            if "AutoWave" in item:
+            if INSTRUMENT_VISA_ADDRESS in item:
                 self.res_name = item
         self.inst = self.rm.open_resource(self.res_name)
-        self.inst.set_visa_attribute(pyvisa.constants.VI_ATTR_SEND_END_EN, 1)
+        # self.inst.set_visa_attribute(pyvisa.constants.VI_ATTR_SEND_END_EN, 1)
         # self.inst.write_termination = ""
         # self.inst.timeout = 2000 # timeout in ms
         print("Connected to: ", self.inst.query("*IDN?"))
-        print("Protocol OFF: ", self.inst.query("*PRCL:OFF"))
-        print(self.inst.query("*ECHO:ON"))
+
 
 
     def send(self, txt):
@@ -97,8 +97,14 @@ class com_interface:
         self.inst.write(txt)
         delay()
 
+    # def read(self, txt):
+    #     # will put sending command here
+    #     # print(f'Sending: {txt}')
+    #     self.inst.write(txt)
+    #     delay()
+
     def query(self, cmd_str):
-        # delay and retry in cause of old device with slow processing time
+        # delay and retry in case of old device with slow processing time
         # cycle will make 10 attempts before everything will get crashed.
         for i in range(10):
             try:
@@ -111,6 +117,19 @@ class com_interface:
             except:
                 print("VI_ERROR_TMO, retry:", i)
                 delay(5)
+    
+    def init_measurement(self):
+        pass
+        # Turn on AM modulation at 30%
+        self.send(self.cmd.am.set.val(30))
+        self.send(self.cmd.am.on())
+
+        # Turn on internal modulator at 1 kHz
+        self.send(self.cmd.am.set1kHz())
+
+        # Set amplitude to 20 dBuV
+        #self.send(self.cmd.am.set.)
+
 
 
     def disconnect(self):
@@ -257,3 +276,6 @@ if __name__ == '__main__':
     print(cmd.pilot_signal.set.val(10))
     print(cmd.total_fm_deviation.val(100))
     print(cmd.composite_sign_out_level.val(500))
+    print(cmd.am.set.val(30))
+    inst = com_interface()
+    inst.init()
