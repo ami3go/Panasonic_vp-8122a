@@ -47,10 +47,7 @@ INSTRUMENT_VISA_ADDRESS = 'USB0::0x03EB::0x2065::GPIB_02_55137303031351900211::I
 # P1D0 
 # P2D0
 
-
-
 GLOBAL_TOUT =  10 # IO time out in milliseconds
-
 
 
 def range_check(val, min, max, val_name):
@@ -61,7 +58,6 @@ def range_check(val, min, max, val_name):
         print(f"Wrong {val_name}: {val}. Should be >= {min}")
         val = min
     return val
-
 
 
 class com_interface:
@@ -78,7 +74,6 @@ class com_interface:
 
     def init(self):
         rm_list = self.rm.list_resources()
-
         i = 0
         for item in rm_list:
             if INSTRUMENT_VISA_ADDRESS in item:
