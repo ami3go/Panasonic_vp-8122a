@@ -249,10 +249,8 @@ class storage:
         self.output = output("AP")
         self.freq = frequency("FR")
         self.main_and_sub_ch = main_and_sub_ch()
-
-
-
-
+        self.neg_peak_clipper = on_off("NP")
+        self.fm_stereo_pre_emphasis = fm_stereo_pre_emphasis()
 
 
 class control_output(on_off, up_down):
@@ -261,6 +259,7 @@ class control_output(on_off, up_down):
         self.cmd = self.prefix
         self.prefix = self.cmd
         self.set = dig_param3(self.prefix, 0, 10)
+
 
 class modulation(on_off, t1_t4_ext):
     def __init__(self, prefix, min, max):
@@ -354,6 +353,23 @@ class main_and_sub_ch:
     def L_R_EXT(self):
         return "MS 17"
 
+class fm_stereo_pre_emphasis:
+    def __init__(self):
+        pass
+
+    def OFF(self):
+        return "PR 0"
+
+    def set_25uS(self):
+        return "PR 1"
+
+    def set_50uS(self):
+        return "PR 2"
+
+    def set_75uS(self):
+        return "PR 3"
+
+
 
 if __name__ == '__main__':
 
@@ -385,8 +401,10 @@ if __name__ == '__main__':
     print(cmd.freq.set_MHz(150))
     print(cmd.main_and_sub_ch.OFF())
     print(cmd.main_and_sub_ch.MONO_INT())
-
-
+    print(cmd.neg_peak_clipper.on())
+    print(cmd.neg_peak_clipper.off())
+    print(cmd.fm_stereo_pre_emphasis.OFF())
+    print(cmd.fm_stereo_pre_emphasis.set_50uS())
     # inst = com_interface()
     # inst.init()
 
