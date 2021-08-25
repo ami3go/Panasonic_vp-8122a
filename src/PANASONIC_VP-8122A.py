@@ -120,8 +120,9 @@ class com_interface:
         self.send(self.cmd.reboot.str())
 
 
-
-
+##################################################################
+# *******  service classes to reduce coding  *********************
+##################################################################
 
 class str3:
     def __init__(self, prefix):
