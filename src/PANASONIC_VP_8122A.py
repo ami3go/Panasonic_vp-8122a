@@ -273,6 +273,9 @@ class modulation(on_off, t1_t4_ext):
 
 
 class output(on_off):
+    # in order to set output COOF + APXY.0DB
+    # first step  CO OF
+    # second setep set amplitude
     def __init__(self, prefix):
         self.prefix = prefix
         self.cmd = self.prefix
