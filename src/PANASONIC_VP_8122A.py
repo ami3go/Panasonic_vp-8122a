@@ -121,7 +121,7 @@ class com_interface:
 
         # Set amplitude to 20 dBuV
         #output_level = "AP20.0DB"
-        self.send(self.cmd.output.set_dBm.val(20.0))
+        self.send(self.cmd.output.set_dBuV.val(20.0))
 
         # Set modulation mode to mono
         #modulation_mode = "MS01"
