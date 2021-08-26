@@ -231,7 +231,8 @@ class on_off_set:
 ##################################################################
 # *******  main class with high level key function list  *********
 ##################################################################
-#
+
+
 class storage:
     def __init__(self):
         self.cmd = None
@@ -249,9 +250,11 @@ class storage:
         self.neg_peak_clipper = on_off("NP")
         self.fm_stereo_pre_emphasis = fm_stereo_pre_emphasis()
 
+
 ##################################################################
 # *******                   hierarchical classes         *********
 ##################################################################
+
 
 class control_output(on_off, up_down):
     def __init__(self, prefix):
@@ -278,6 +281,7 @@ class output(on_off):
         self.set_dBuV = dig_param3(self.prefix, -26.0, 126.0, "DB")
         self.set_mV = dig_param3(self.prefix, 0.000050, 2000, "MV")
         self.set_uV = dig_param3(self.prefix, 0.050, 2000000, "UV")
+
     def set_imp_50R(self):
         return self.prefix + " 50"
 
@@ -375,16 +379,12 @@ class fm_stereo_pre_emphasis:
     def set_75uS(self):
         return "PR 3"
 
-
-
 if __name__ == '__main__':
 
     cmd = storage()
     print("")
     print("TOP LEVEL")
     print("*" * 150)
-    # print(cmd.control_out.on.str())
-    # print(cmd.control_out.off.str())
     print(cmd.control_out.up())
     print(cmd.control_out.down())
     print(cmd.control_out.set.val(8.2))
