@@ -113,31 +113,31 @@ class com_interface:
                 print("VI_ERROR_TMO, retry:", i)
                 delay(5)
     
-    def init_measurement(self):
-        pass
-        # Turn on AM modulation at 30%
-        self.send(self.cmd.am.set.val(30))
-        self.send(self.cmd.am.on())
-
-        # Set amplitude to 20 dBuV
-        #output_level = "AP20.0DB"
-        self.send(self.cmd.output.set_dBuV.val(20.0))
-
-        # Set modulation mode to mono
-        #modulation_mode = "MS01"
-        self.send(self.cmd.main_and_sub_ch.MONO_INT())
-
-
-        # Turn on internal modulator at 1 kHz
-        # Could also use external
-        self.send(self.cmd.am.set1kHz())
-
-        # Set Frequency to 531 Hz (according to the specific measurement)
-        #frequency = "FR0.531MZ"
-        self.send(self.cmd.freq.MHz.val(0.531))
-        # Set output impedance to 50 ohm
-        #output_impendace = "AP50"
-        self.send(self.cmd.output.set_imp_50R())
+    # def init_measurement(self):
+    #     pass
+    #     # Turn on AM modulation at 30%
+    #     self.send(self.cmd.am.set.val(30))
+    #     self.send(self.cmd.am.on())
+    #
+    #     # Set amplitude to 20 dBuV
+    #     #output_level = "AP20.0DB"
+    #     self.send(self.cmd.output.set_dBuV.val(20.0))
+    #
+    #     # Set modulation mode to mono
+    #     #modulation_mode = "MS01"
+    #     self.send(self.cmd.main_and_sub_ch.MONO_INT())
+    #
+    #
+    #     # Turn on internal modulator at 1 kHz
+    #     # Could also use external
+    #     self.send(self.cmd.am.set1kHz())
+    #
+    #     # Set Frequency to 531 Hz (according to the specific measurement)
+    #     #frequency = "FR0.531MZ"
+    #     self.send(self.cmd.freq.MHz.val(0.531))
+    #     # Set output impedance to 50 ohm
+    #     #output_impendace = "AP50"
+    #     self.send(self.cmd.output.set_imp_50R())
 
 
     def disconnect(self):
