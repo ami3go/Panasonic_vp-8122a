@@ -121,7 +121,7 @@ class com_interface:
 
         # Set amplitude to 20 dBuV
         #output_level = "AP20.0DB"
-        self.send(self.cmd.output.set_level_dBm(20.0))
+        self.send(self.cmd.output.set_dBm.val(20.0))
 
         # Set modulation mode to mono
         #modulation_mode = "MS01"
@@ -134,7 +134,7 @@ class com_interface:
 
         # Set Frequency to 531 Hz (according to the specific measurement)
         #frequency = "FR0.531MZ"
-        self.send(self.cmd.freq.set_MHz(0.531))
+        self.send(self.cmd.freq.MHz.val(0.531))
         # Set output impedance to 50 ohm
         #output_impendace = "AP50"
         self.send(self.cmd.output.set_imp_50R())
@@ -228,8 +228,10 @@ class on_off_set:
     def off(self):
         return self.prefix + " OF"
 
-
-#main class with high level key function list
+##################################################################
+# *******  main class with high level key function list  *********
+##################################################################
+#
 class storage:
     def __init__(self):
         self.cmd = None
@@ -247,8 +249,9 @@ class storage:
         self.neg_peak_clipper = on_off("NP")
         self.fm_stereo_pre_emphasis = fm_stereo_pre_emphasis()
 
-# below are low level classes:
-#
+##################################################################
+# *******                   hierarchical classes         *********
+##################################################################
 
 class control_output(on_off, up_down):
     def __init__(self, prefix):
@@ -271,28 +274,31 @@ class output(on_off):
         self.prefix = prefix
         self.cmd = self.prefix
         self.prefix = self.cmd
-
+        self.set_dBm = dig_param3(self.prefix, -133.0, 19.0, "DM")
+        self.set_dBuV = dig_param3(self.prefix, -26.0, 126.0, "DB")
+        self.set_mV = dig_param3(self.prefix, 0.000050, 2000, "MV")
+        self.set_uV = dig_param3(self.prefix, 0.050, 2000000, "UV")
     def set_imp_50R(self):
         return self.prefix + " 50"
 
     def set_imp_75R(self):
         return self.prefix + " 75"
 
-    def set_level_dBm(self, value):
-        value = range_check(value, -133.0, 19.0, "dBm value")
-        return f'{self.cmd} {value}DM'
-
-    def set_level_dBuV(self, value):
-        value = range_check(value, -26.0, 126.0, "dBuV value")
-        return f'{self.cmd} {value}DB'
-
-    def set_level_mV(self, value):
-        value = range_check(value, 0.000050, 2000, "mV value")
-        return f'{self.cmd} {value}MV'
-
-    def set_level_uV(self, value):
-        value = range_check(value, 0.050, 2000000, "uV value")
-        return f'{self.cmd} {value}UV'
+    # def set_level_dBm(self, value):
+    #     value = range_check(value, -133.0, 19.0, "dBm value")
+    #     return f'{self.cmd} {value}DM'
+    #
+    # def set_level_dBuV(self, value):
+    #     value = range_check(value, -26.0, 126.0, "dBuV value")
+    #     return f'{self.cmd} {value}DB'
+    #
+    # def set_level_mV(self, value):
+    #     value = range_check(value, 0.000050, 2000, "mV value")
+    #     return f'{self.cmd} {value}MV'
+    #
+    # def set_level_uV(self, value):
+    #     value = range_check(value, 0.050, 2000000, "uV value")
+    #     return f'{self.cmd} {value}UV'
 
 
 class frequency:
@@ -300,15 +306,16 @@ class frequency:
         self.prefix = prefix
         self.cmd = self.prefix
         self.prefix = self.cmd
-        self.Mhz = dig_param3(self.prefix, 0.01000, 280.00000, "MZ")
+        self.MHz = dig_param3(self.prefix, 0.01000, 280.00000, "MZ")
+        self.kHz = dig_param3(self.prefix, 10.00000, 280000.00, "KZ")
 
-    def set_MHz(self, value):
-        value = range_check(value, 0.01000, 280.00000, "freq in MHz value")
-        return f'{self.cmd} {value}MZ'
-
-    def set_kHz(self, value):
-        value = range_check(value, 10.00000, 280000.00, "dBuV value")
-        return f'{self.cmd} {value}KZ'
+    # def set_MHz(self, value):
+    #     value = range_check(value, 0.01000, 280.00000, "freq in MHz value")
+    #     return f'{self.cmd} {value}MZ'
+    #
+    # def set_kHz(self, value):
+    #     value = range_check(value, 10.00000, 280000.00, "dBuV value")
+    #     return f'{self.cmd} {value}KZ'
 
 
 class main_and_sub_ch:
@@ -350,6 +357,7 @@ class main_and_sub_ch:
 
     def L_R_EXT(self):
         return "MS 17"
+
 
 class fm_stereo_pre_emphasis:
     def __init__(self):
@@ -394,16 +402,16 @@ if __name__ == '__main__':
     print(cmd.output.on())
     print(cmd.output.set_imp_50R())
     print(cmd.output.set_imp_75R())
-    print(cmd.output.set_level_dBm(20))
-    print(cmd.freq.set_kHz(1500))
-    print(cmd.freq.set_MHz(150))
-    print(cmd.freq.Mhz.val(150))
+    print(cmd.output.set_dBm.val(20))
+    print(cmd.freq.kHz.val(1500))
+    print(cmd.freq.MHz.val(150))
     print(cmd.main_and_sub_ch.OFF())
     print(cmd.main_and_sub_ch.MONO_INT())
     print(cmd.neg_peak_clipper.on())
     print(cmd.neg_peak_clipper.off())
     print(cmd.fm_stereo_pre_emphasis.OFF())
     print(cmd.fm_stereo_pre_emphasis.set_50uS())
+    print(cmd.output.set_dBm.val(10))
 
     # inst = com_interface()
     # inst.init()
