@@ -30,6 +30,16 @@ def rf_init():
     # Set output impedance to 50 ohm
     # output_impendace = "AP50"
     rf.send(cmd.output.set_imp_50R())
+    rf.send(cmd.control_out.on())
+
+def set_freq_MHz(frq_Mhz):
+    rf.send(cmd.control_out.off())
+
+    rf.send(cmd.freq.MHz.val(frq_Mhz))
+
+    rf.send(cmd.control_out.on())
+
+
 
 # def rf_init_measurements():
 
