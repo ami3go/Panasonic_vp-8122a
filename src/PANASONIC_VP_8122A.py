@@ -91,7 +91,7 @@ class com_interface:
                 delay()  # regular delay according to datasheet before next command
                 return return_val  # if reading was successful methods will return the value
             # in case of any error during receiving
-            # it will wait for 5 sec and print try counter 
+            # it will wait for 5 sec and print try counter
             except:
                 print("VI_ERROR_TMO, retry:", i)
                 delay(5)
