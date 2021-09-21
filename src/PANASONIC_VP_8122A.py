@@ -50,6 +50,10 @@ class com_interface:
         self.cmd = storage()
 
     def init(self):
+        #  Int is getting the list of available resources
+        #  if there such resource and store it and open
+        #  in order to check init will print "query("*IDN?")" responce
+
         rm_list = self.rm.list_resources()
         i = 0
         for item in rm_list:
@@ -78,14 +82,16 @@ class com_interface:
     def query(self, cmd_str):
         # delay and retry in case of old device with slow processing time
         # cycle will make 10 attempts before everything will get crashed.
+        i = 0
         for i in range(10):
             try:
                 # debug print to check how may tries
                 #print("trying",i)
                 return_val = self.inst.query(cmd_str)
-                delay() # regular delay according to datasheet before next command
-                return return_val
-
+                delay()  # regular delay according to datasheet before next command
+                return return_val  # if reading was successful methods will return the value
+            # in case of any error during receiving
+            # it will wait for 5 sec and print try counter 
             except:
                 print("VI_ERROR_TMO, retry:", i)
                 delay(5)
