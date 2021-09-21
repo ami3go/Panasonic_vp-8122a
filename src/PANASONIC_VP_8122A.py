@@ -22,30 +22,7 @@ INSTRUMENT_VISA_ADDRESS = 'USB0::0x03EB::0x2065::GPIB_02_55137303031351900211::I
     ## Video: Connecting to Instruments Over LAN, USB, and GPIB in Keysight Connection Expert: https://youtu.be/sZz8bNHX5u4
 
 # any read rerun the status string divided by space
-# FR0.87300MZ 
-# AP20.0DB 
-# EMOF 
-# COON 
-# CO0.0 
-# AP50 
-# MS01 
-# AM40.0 
-# AMON 
-# AMT1 
-# FM40.0 
-# FMOF 
-# FMT1 
-# MS46PC 
-# PR0 
-# PL0.0 
-# PLOF 
-# SCOF 
-# NPOF 
-# DR30 
-# AS0 
-# NT0.20 
-# P1D0 
-# P2D0
+# FR87.50000MZ AP0.0DB EMOF COON CO0.0 AP50 MS01 AM30.0 AMOF AMT1 FM40.0 FMON FMT1 MS100PC PR0 PL0.0 PLOF SCOF NPOF DR30 AS0 NT0.20 P1D0 P2D0
 
 GLOBAL_TOUT =  10 # IO time out in milliseconds
 
@@ -112,32 +89,6 @@ class com_interface:
             except:
                 print("VI_ERROR_TMO, retry:", i)
                 delay(5)
-    
-    # def init_measurement(self):
-    #     pass
-    #     # Turn on AM modulation at 30%
-    #     self.send(self.cmd.am.set.val(30))
-    #     self.send(self.cmd.am.on())
-    #
-    #     # Set amplitude to 20 dBuV
-    #     #output_level = "AP20.0DB"
-    #     self.send(self.cmd.output.set_dBuV.val(20.0))
-    #
-    #     # Set modulation mode to mono
-    #     #modulation_mode = "MS01"
-    #     self.send(self.cmd.main_and_sub_ch.MONO_INT())
-    #
-    #
-    #     # Turn on internal modulator at 1 kHz
-    #     # Could also use external
-    #     self.send(self.cmd.am.set1kHz())
-    #
-    #     # Set Frequency to 531 Hz (according to the specific measurement)
-    #     #frequency = "FR0.531MZ"
-    #     self.send(self.cmd.freq.MHz.val(0.531))
-    #     # Set output impedance to 50 ohm
-    #     #output_impendace = "AP50"
-    #     self.send(self.cmd.output.set_imp_50R())
 
 
     def disconnect(self):
@@ -291,22 +242,6 @@ class output(on_off):
     def set_imp_75R(self):
         return self.prefix + " 75"
 
-    # def set_level_dBm(self, value):
-    #     value = range_check(value, -133.0, 19.0, "dBm value")
-    #     return f'{self.cmd} {value}DM'
-    #
-    # def set_level_dBuV(self, value):
-    #     value = range_check(value, -26.0, 126.0, "dBuV value")
-    #     return f'{self.cmd} {value}DB'
-    #
-    # def set_level_mV(self, value):
-    #     value = range_check(value, 0.000050, 2000, "mV value")
-    #     return f'{self.cmd} {value}MV'
-    #
-    # def set_level_uV(self, value):
-    #     value = range_check(value, 0.050, 2000000, "uV value")
-    #     return f'{self.cmd} {value}UV'
-
 
 class frequency:
     def __init__(self, prefix):
@@ -315,14 +250,6 @@ class frequency:
         self.prefix = self.cmd
         self.MHz = dig_param3(self.prefix, 0.01000, 280.00000, "MZ")
         self.kHz = dig_param3(self.prefix, 10.00000, 280000.00, "KZ")
-
-    # def set_MHz(self, value):
-    #     value = range_check(value, 0.01000, 280.00000, "freq in MHz value")
-    #     return f'{self.cmd} {value}MZ'
-    #
-    # def set_kHz(self, value):
-    #     value = range_check(value, 10.00000, 280000.00, "dBuV value")
-    #     return f'{self.cmd} {value}KZ'
 
 
 class main_and_sub_ch:
