@@ -73,6 +73,7 @@ def test_hil_runner_produces_reports_but_never_claims_physical_pass(
     assert evidence["execution"]["pytest_exit_code"] == 1
     assert evidence["execution"]["physical_rf_qualified"] is False
     assert evidence["physical_qualified_families"] == []
+    assert next(c for c in evidence["cases"] if c["case_id"] == "TM.0")["physical_hil_status"] == "INCONCLUSIVE"
     assert not any(c["physical_hil_status"] == "PASS" for c in evidence["cases"])
 
 
