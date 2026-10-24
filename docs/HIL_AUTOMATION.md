@@ -69,3 +69,20 @@ Each mode yields an append-only, uniquely named JSON file with UTC timestamp, op
 The [full native reference](../Doc/GPIB/COMMAND_REFERENCE.md) documents 22 families but does not establish that any are hardware qualified. The [full automated qualification task](../task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md) specifies the future externally measured active RF phases.
 
 **Never mark HIL PASS from software simulation, a successful VISA write, or front-panel status alone.**
+
+
+## v0.2.7 automated readback execution and reports (NOT RF qualified)
+
+The source-controlled matrix at tests/hil/command_matrix.json catalogs 45 variants in 22 command families. The only physically selectable cases are TM0/TM1/TM2. Documented RF command examples are serialization fixtures, not dispatch instructions. Status-only fields have no TX vector and IEEE-488 bus operations are separate.
+
+After completing all v0.2.6 isolated-bench authorization steps above, run:
+
+    python -m tests.hil_runner --report-dir "$VP8122A_HIL_EVIDENCE_DIR"
+
+The runner validates the local authorization, starts the talker-only pytest suite under a finite outer subprocess deadline, and emits distinct JSON/CSV/Markdown/JUnit XML reports for the configured run ID, even when pytest fails. It never sends RF ON, candidate RF OFF, SCPI, preset or external-port writes.
+
+To rebuild reports without VISA or hardware, first create an output directory, then run:
+
+    python -m tests.hil_reporting --evidence-dir ./hil-evidence --output-dir ./hil-reports --run-id YOUR_RUN_ID
+
+Previously recorded talker observations are filtered by exact run ID. An OBSERVED reply does not establish bus EOI, physical output status or measured RF and remains INCONCLUSIVE for physical qualification. No active RF measurement adapter is approved or enabled in this release.
