@@ -1,6 +1,6 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.5** (documentation-only update; driver functionality integrated in v0.2.4): native-byte transport migration merged to `main`. **NOT HIL-QUALIFIED**.
+Version **0.2.6**: v0.2.4 native-byte driver migration and v0.2.6 opt-in native GPIB readback-only HIL suite merged to `main` (software-only). **NOT HIL-QUALIFIED**.
 
 **Current project status:** [Verified implementation, CI, open issues, and HIL blockers](docs/PROJECT_STATUS.md). [Deep-review remediation status](docs/REMEDIATION_STATUS.md).
 
@@ -83,3 +83,12 @@ Original review: [review and 22 findings](task/VP8122A_DEEP_REVIEW_2026-10-24.md
 - State after uncertain mutation is `UNKNOWN`, and a faulted transport is not automatically reconnected, retried or replayed. No result is a measured RF output level.
 - Verify `pytest -m 'not hardware'` and CI across Python 3.10–3.13. Hardware/HIL remains separately gated.
 
+
+
+## Automated native GPIB HIL readback tests (v0.2.6)
+
+The [physical talker-only HIL suite](tests/test_hil_authorized.py) can verify the Panasonic TM0/TM1/TM2 selection and bounded talker responses with an explicitly authorized local GPIB bench. It uses the public VP8122A API, a strict TX allowlist and uniquely named JSON evidence. It **cannot** send SCPI queries, APOF, APON or RF configuration writes. The test intentionally closes the core transport directly instead of VP8122A.close(), because the latter attempts an electrically unqualified APOF candidate.
+
+[HIL automation runbook](docs/HIL_AUTOMATION.md) · [Full automatic native-command HIL implementation prompt](task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md)
+
+Run safe offline gate tests with `python -m pytest -q tests/test_hil_guards.py`; physical tests are excluded from ordinary CI. A physical talker read, RF electrical OFF, or native command family is **NOT** yet HIL-qualified; running software tests does not change that status.
