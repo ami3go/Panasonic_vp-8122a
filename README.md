@@ -1,6 +1,8 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.4**: native-byte transport migration development candidate. **NOT HIL-QUALIFIED**.
+Version **0.2.5** (documentation-only update; driver functionality integrated in v0.2.4): native-byte transport migration merged to `main`. **NOT HIL-QUALIFIED**.
+
+**Current project status:** [Verified implementation, CI, open issues, and HIL blockers](docs/PROJECT_STATUS.md). [Deep-review remediation status](docs/REMEDIATION_STATUS.md).
 
 The VP-8122A uses legacy GP-IB native program words, **not standard SCPI**. The driver does not send `*IDN?` on connection. It uses compact command candidates consistent with historic messages (`FR...MZ`, `AP...DB`, `APOF`), but command acceptance and RF output safety require an actual VP-8122A and supported GPIB adapter to verify.
 
@@ -71,7 +73,7 @@ Enabling RF requires a *separate explicit call* to `rf.enable_output(authorized=
 
 Original review: [review and 22 findings](task/VP8122A_DEEP_REVIEW_2026-10-24.md). Implemented changes and deferred evidence are tracked in [docs/REMEDIATION_STATUS.md](docs/REMEDIATION_STATUS.md).
 
-## Core migration and CI (v0.2.4 development)
+## Core migration and CI (functional v0.2.4, integrated in main)
 
 - Core prerequisite: [addressed GTL PR #12](https://github.com/ami3go/scpi-driver-core/pull/12), merged as `1e03b6837f96f200dc28233490639f2f080e1791`.
 - Driver dependency pins that Git commit because this development-version package is not assumed published to PyPI. This requires Git access when installing.

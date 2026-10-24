@@ -1,37 +1,33 @@
-# VP-8122A deep-review remediation status — v0.2.2
+# VP-8122A Deep-Review Remediation Status — v0.2.5
 
-Target: `task/VP8122A_DEEP_REVIEW_2026-10-24.md` (reviewed baseline `0bc943e`).
+**Current integration:** Software migration merged to `main` at `808a4dfba4242f8016b3bf4cbbf783eeafddd2f9` (functional v0.2.4). **This v0.2.5 revision updates documentation only.**
 
-| Findings | Fix status | Remaining verification |
+Current project overview: [PROJECT_STATUS.md](PROJECT_STATUS.md). Original audit: [deep review task](../task/VP8122A_DEEP_REVIEW_2026-10-24.md). Core migration review: [CORE_MIGRATION_REVIEW.md](CORE_MIGRATION_REVIEW.md).
+
+| Review findings | Current disposition | Unclosed evidence |
 |---|---|---|
-| R-01 mandatory `*IDN?` | Code fixed: removed from connect | Verify actual talker/status mode in HIL |
-| R-02/R-03 broken examples | Code fixed in new example | Fresh VISA bench smoke |
-| R-04 GTL treated as ASCII | Code fixed with `control_ren(address_gtl)` | Confirm with exact adapter |
-| R-05 swallowed exception | Code fixed: typed error; no blind retries | Inject hardware timeout |
-| R-06 RF output transaction | Code fixed: OFF first, authorized ON, failure OFF attempt, uncertain state | Physical OFF verification needed |
-| R-07/R-08 program grammar/EOI | Compact native serializer & configurable termination added | **NOT QUALIFIED** until manual/HIL byte traces |
-| R-09 read as talker | Read method independent of write | **NOT QUALIFIED** actual talker output |
-| R-10/R-11 validation | Code fixed with strict Decimal validation | Exact model resolution needs confirmation |
-| R-12/R-13 range/resolution | Preliminary limits and 10-Hz encodability enforced | **NOT QUALIFIED** frequency bands/level/impedance |
-| R-14 cross-mode combinations | Unsupported AM+FM, stereo+modulation fail before I/O | Exact permitted combinations manual/HIL |
-| R-15 explicit VISA address | Code fixed (no fuzzy auto-open) | USB adapter path smoke |
-| R-16 concurrency | RLock serializes commands & lifecycle | Stress with HIL backend |
-| R-17 native talker raw/fields | Code fixed with preservation of raw status | Device-specific parser qualification |
-| R-18 package | Root package & `pyproject.toml` added | Fresh install in CI |
-| R-19 offline CI/tests | Mock/fault-injection tests and CI added | GitHub Actions and physical HIL not yet checked |
-| R-20/R-21/R-22 stale material | Modern code/docs and corrected example | Historical module preserved separately until compatibility contract is resolved |
+| R-01 unsupported default `*IDN?` | **Fixed**: native-only byte client, no default SCPI health probes | Physical talker behavior HIL |
+| R-02–R-03 broken example and variable scope | **Fixed in software** | Hardware read-only smoke |
+| R-04 ASCII GTL | **Fixed in core dev12**: opt-in addressed GTL bus API | Real multi-instrument REN/GTL verification |
+| R-05 swallowed query errors | **Fixed**: typed/bounded transport faults | Physical timeout injection |
+| R-06 RF profile safety | **Software safeguards implemented**: OFF-first, explicit authorized ON, UNKNOWN on faults | **P0 independent RF OFF measurement** |
+| R-07–R-09 command delimiters/talker read | **Implemented offline**: 7-bit native ASCII, 255 bytes, EOI/LF/CRLF, TM mode and bounded reads | **P0 real adapter EOI / response frame qualification** |
+| R-10–R-11 numeric validation | **Fixed** strict finite numeric/Decimal rules | Manual and physical data-point golden verification |
+| R-12–R-13 limits, resolution, impedance | **Partially validated against scans**, AM 125%, FM max 300 kHz, FT 3 bands corrected | Frequency bands, 50/75 Ω effects and RF measured limits |
+| R-14 cross-mode combinations | **Safe defaults** reject some unqualified combinations | Device-accurate FM/RF/stereo/pilot rule set |
+| R-15 explicit resource | **Fixed** | Actual controller compatibility |
+| R-16 synchronization | **Fixed in software** using core locks/atomic operations | Real backend stress where necessary |
+| R-17 native status reporting | **Fixed offline** with ordered status and raw bytes | Full 25-field TM0, TM1/TM2 typed grammar and hardware |
+| R-18 packaging | **Implemented** root package and core dependency | Verify fresh install for release |
+| R-19 regression/CI | **Implemented and passing on PR heads** (Python 3.10–3.13) | Full main coverage artifact, separately gated HIL |
+| R-20–R-22 obsolete notes/examples | **Modernized where applicable**; legacy bridge retained | Review compatibility before final stable release |
 
-## Document-sourced discrepancies confirmed in v0.2.2
+## Active tracking
 
-The [Doc/GPIB command reference](../Doc/GPIB/COMMAND_REFERENCE.md) now audits 22 native header families: 3 fully encoded core variants, 9 partial and 10 missing. Open source-confirmed software gaps remain:
-- **FM deviation**: serializer accepts up to 999 kHz but VP-8122A table 4-25 specifies a 300-kHz maximum (**P0**).
-- **AM depth**: table 4-13 permits 0–125%, code stops at 100% (**P1**).
-- **FT deviation**: manual's 0.01/0.1/integer bands do not match constant 0.1 precision (**P1**).
-- **TM0/TM1/TM2** selection missing, so status reads are mode-dependent (**P1**).
-- Alternate RF units, EMF display, SCA, memories and external I/O are uncovered.
-- GPIB message delimiters are documented; real VISA adapter EOI/write behavior remains unverified.
-- `FM2.png` could not be read from GitHub's content API.
+- [Issue #5](https://github.com/ami3go/Panasonic_vp-8122a/issues/5) **OPEN**: physical GPIB/RF output qualification and safety evidence, mandatory before unattended use.
+- [Issue #6](https://github.com/ami3go/Panasonic_vp-8122a/issues/6) **OPEN**: numeric corrections are implemented in merged v0.2.4; do **not** close until remaining cross-field validation and associated acceptance/evidence are reconciled.
+- [PR #7](https://github.com/ami3go/Panasonic_vp-8122a/pull/7) **OPEN** and overlaps the now-merged command reference. Compare unique contributions and then close/rebase appropriately; do not attempt a conflict merge.
+- Command matrix remains **3 encoded / 9 partial / 10 missing** among 22 documented native header families, with **zero hardware-qualified**.
+- The scanned `FM2.png` source remains unreadable from the GitHub content API and may contain additional material.
 
-These command-coverage gaps should be addressed in version-incremented code PRs with tests. They are **not** closed merely by documenting them.
-
-**Overall: software remediation candidate; hardware verification pending, NOT a qualified release.**
+**Disposition:** Software core migration is merged, but the project remains **NOT HIL-QUALIFIED**. The driver cannot be called fully repaired or certified for unattended RF operation until the physical evidence gates pass.
