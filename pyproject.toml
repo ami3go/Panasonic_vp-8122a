@@ -4,15 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "panasonic-vp8122a"
-version = "0.2.3"
+version = "0.2.4"
 description = "Panasonic VP-8122A legacy GP-IB RF signal generator driver"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["PyVISA>=1.13"]
+dependencies = ["scpi-driver-core[visa] @ git+https://github.com/ami3go/scpi-driver-core.git@1e03b6837f96f200dc28233490639f2f080e1791"]
 classifiers = ["Programming Language :: Python :: 3", "Operating System :: OS Independent"]
 
 [project.optional-dependencies]
-test = ["pytest>=7"]
+test = ["pytest>=8", "pytest-timeout>=2.4,!=2.5.0", "pytest-cov>=5", "hypothesis>=6.168", "pyvisa-sim>=0.7.1"]
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -20,3 +20,7 @@ include = ["panasonic_vp8122a*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-q --strict-markers -m not_hardware"
+timeout = 30
+session_timeout = 600
+markers = ["hardware: requires an authorized physical GPIB RF bench", "visa_sim: PyVISA simulated integration", "property: Hypothesis properties"]
