@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from contextlib import suppress
 from threading import RLock
 from typing import Any, Callable
 import logging
@@ -275,6 +276,12 @@ class VP8122A:
                 except Exception as exc:
                     self.last_native_status = None
                     self.state = 'UNKNOWN'
+                    # A malformed / truncated response can leave the channel
+                    # desynchronized. Drop the VISA resource rather than
+                    # interpreting a late reply as the next status result.
+                    if self._transport is not None and self.connected:
+                        with suppress(Exception):
+                            self._transport.invalidate()
                     raise TransportError("GPIB native talker status failed") from exc
                 self.last_status = status.text
                 self.last_native_status = status
