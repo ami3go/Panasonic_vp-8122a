@@ -14,11 +14,12 @@ def test_legacy_builder_compact_and_validated():
 
 def test_legacy_send_requires_explicit_authorization():
     class FakeRM:
-        def open_resource(self, resource):
+        def open_resource(self, resource, **kwargs):
             class Inst:
                 timeout=None
                 write_termination=None
-                def write(self, x): pass
+                def write_raw(self, x): return len(x)
+                def read_raw(self): return b'APOF\n'
                 def close(self): pass
             return Inst()
     client=com_interface('GPIB0::2::INSTR',resource_manager=FakeRM(),settle_seconds=0).init()
