@@ -66,14 +66,14 @@ class NativeCommands:
 
     @staticmethod
     def am_depth(percent: Number) -> str:
-        text = number(percent, lower='0', upper='100', places=1, name='am_depth_percent')
+        text = number(percent, lower='0', upper='125', places=1, name='am_depth_percent')
         if Decimal(text) % Decimal('0.5'):
             raise ProtocolValueError('AM depth step must be 0.5 percent')
         return 'AM' + text
 
     @staticmethod
     def fm_deviation_khz(khz: Number) -> str:
-        text = number(khz, lower='0', upper='999', places=2, name='fm_deviation_khz')
+        text = number(khz, lower='0', upper='300', places=2, name='fm_deviation_khz')
         val = Decimal(text)
         resolution = Decimal('0.01') if val < 10 else (Decimal('0.1') if val < 100 else Decimal('1'))
         if val % resolution:
@@ -130,4 +130,15 @@ class NativeCommands:
 
     @staticmethod
     def total_fm_deviation(value: Number) -> str:
-        return 'FT' + number(value, lower='0', upper='402', places=1, name='total_fm_deviation')
+        text = number(value, lower='0', upper='402', places=2, name='total_fm_deviation')
+        val = Decimal(text)
+        resolution = Decimal('0.01') if val < 10 else (Decimal('0.1') if val < 100 else Decimal('1'))
+        if val % resolution:
+            raise ProtocolValueError(f'total FM deviation step is {resolution} kHz in this band')
+        return 'FT' + text
+
+    @staticmethod
+    def talker_mode(mode: int) -> str:
+        if type(mode) is not int or mode not in (0, 1, 2):
+            raise ProtocolValueError('talker mode must be 0, 1, or 2')
+        return 'TM' + str(mode)
