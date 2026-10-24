@@ -10,3 +10,29 @@
 6. With authorized test setup, inject errors after each output programming step, including before RF enable, during enable, during readback and while closing. Verify OFF physically; distinguish `OFF_UNCONFIRMED` from measured RF OFF.
 7. Save raw and parsed status, write and read traces, requested vs measured RF frequency/amplitude/modulation, meter calibration, and pass/fail with thresholds approved *before* testing.
 8. Review all results independently, record evidence and sign off before marking hardware-qualified. Do not assume `*IDN?`, `*OPC?` or `SYST:ERR?` support.
+
+## Migrated core driver qualification: v0.2.4 (NOT EXECUTED)
+
+The offline suite covers the `VP8122A → ScpiClient → VisaTransport → PyVISA` stack and includes PyVISA-sim, but cannot prove the bus END line, addressed GTL, RF levels or actual RF OFF. The production driver does not send `*IDN?`, `*RST`, `*OPC?`, `SYST:ERR?`, `OUTP`, or ASCII `GTL`.
+
+### Preconditions (stop unless all are satisfied)
+
+- Obtain written authorization for RF generation, radio-frequency load, measurement equipment, limits and operator.
+- Use a protected bench; ensure correctly rated termination, attenuator, external spectrum/RF meter and physical emergency power disconnect.
+- Identify VISA address, controller model/firmware, PyVISA backend, serial number, instrument firmware/manual revision, cable/EOI behavior, test run ID and trace/log storage.
+- Independently verify the manual's `APOF` / `APON` RF output semantics before any unattended configuration or enabling; baseline candidate OFF *cannot* be treated as measured safe OFF.
+- Ensure the selected resource is addressed GPIB `::INSTR` and no other instrument shares unexpected side effects from REN / GTL operations.
+- Set `VP8122A_HIL_AUTHORIZED=ISOLATED_RF_BENCH_APPROVED` and `VP8122A_HIL_RESOURCE=<explicit GPIB VISA resource>` only on this physically approved bench.
+
+### Controlled qualification sequence
+
+1. Run **read-only** bus open, `TM0` talker and END-bounded read, then measure the output during the CLOSE-time candidate `APOF` command. Record the raw bytes and physical RF measurement (do not assume `TM0` indicates physical RF state).
+2. Verify three native terminator policies separately: EOI-only, LF, CRLF. Capture the actual GPIB END line on the controller or an IEEE-488 analyzer. Record byte-for-byte captures and observed status under each configuration.
+3. Verify TM0 ordered field count/values and repeated `AP`, `AM`, `FM`, `CO` families against manual fields 1–25 and front-panel settings. Save full raw reply; verify TM1 and TM2 as distinct mode responses without applying the TM0 parser to them.
+4. Request explicit addressed GTL and verify only the addressed VP-8122A changes remote/local state; a different instrument must remain unaffected. Compare with existing global REN deassert operation; do not issue a bus-wide command by accident.
+5. With independent frequency/RF-level measurement and permission, verify 10 Hz/20 Hz RF band steps, AM up to 125%, FM at most 300 kHz, FT three resolution bands, 50/75 Ω behavior and profiles in the correct safe order.
+6. Inject transport/read/write timeouts and unplug scenarios at each mutation boundary. Confirm no automatic retry of an ON command, no profile replay after reconnect, no SCPI probes, bounded cleanup and human-visible UNKNOWN states.
+7. Exercise the `tests/test_hil_authorized.py` guarded suite only after separate approval. This suite is initial protocol reconnaissance, **not** full RF safety qualification. Add real measurement assertions, RF power tolerance, residual OFF limit, emergency OFF and proof of qualified command semantics before accepting the hardware release.
+8. Attach signed raw GPIB captures, independent RF measurement results, operator, thresholds, environment and known discrepancies. Mark each requirement PASS / FAIL / NOT_TESTED / INCONCLUSIVE without promoting inferred OFF into confirmed OFF.
+
+Do **not** run the HIL suite in GitHub Actions or an unattended runner.
