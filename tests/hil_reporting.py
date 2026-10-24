@@ -119,12 +119,15 @@ def measurement_comparison(
     return "INDETERMINATE"
 
 
-def load_talker_observations(folder: Path) -> list[dict[str, Any]]:
+def load_talker_observations(folder: Path, *, run_id: str | None = None) -> list[dict[str, Any]]:
     """Load pre-existing JSON evidence only; no RF/GPIB backend calls."""
     if not folder.is_dir():
         raise MatrixError("evidence directory does not exist")
+    if run_id is not None and RUN_ID.fullmatch(run_id) is None:
+        raise MatrixError("unsafe run ID")
     results: list[dict[str, Any]] = []
-    for path in sorted(folder.glob("vp8122a_*_tm*.json")):
+    pattern = f"vp8122a_{run_id}_tm*.json" if run_id else "vp8122a_*_tm*.json"
+    for path in sorted(folder.glob(pattern)):
         if path.stat().st_size > 2_000_000:
             raise MatrixError(f"oversized evidence: {path.name}")
         try:
@@ -249,7 +252,7 @@ def main() -> int:
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--run-id", required=True)
     ns = parser.parse_args()
-    report = build_report(load_matrix(), load_talker_observations(ns.evidence_dir),
+    report = build_report(load_matrix(), load_talker_observations(ns.evidence_dir, run_id=ns.run_id),
                           run_id=ns.run_id)
     for name, path in write_reports(report, ns.output_dir).items():
         print(f"{name}: {path}")
