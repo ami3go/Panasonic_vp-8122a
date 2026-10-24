@@ -1,10 +1,10 @@
 # VP-8122A — Automated Native GPIB HIL Protocol Verification
 
-**Introduced in development v0.2.5. Hardware status: NOT EXECUTED / NOT RF QUALIFIED.**
+**Introduced in development v0.2.6. Hardware status: NOT EXECUTED / NOT RF QUALIFIED.**
 
 ## Protocol boundary
 
-The Panasonic VP-8122A speaks **native Panasonic GPIB**, **not SCPI**. The shared transport library's name does not authorize any SCPI identity, error, reset or output command on this instrument. The v0.2.5 HIL suite sends only TM0, TM1 or TM2 native talker-selection program words and receives bounded replies. It does not enable RF, configure a profile, verify OFF electrically, or change presets.
+The Panasonic VP-8122A speaks **native Panasonic GPIB**, **not SCPI**. The shared transport library's name does not authorize any SCPI identity, error, reset or output command on this instrument. The v0.2.6 HIL suite sends only TM0, TM1 or TM2 native talker-selection program words and receives bounded replies. It does not enable RF, configure a profile, verify OFF electrically, or change presets.
 
 ## Offline verification
 
@@ -57,7 +57,7 @@ Each mode yields an append-only, uniquely named JSON file with UTC timestamp, op
 
 ## Command coverage at this stage
 
-| Family | v0.2.5 physical suite | Requirement for full qualification |
+| Family | v0.2.6 physical suite | Requirement for full qualification |
 |---|---|---|
 | TM | Prepared TM0/TM1/TM2 native readback-only tests | Authorized bench run, actual instrument trace and LF/EOI verification |
 | FR, AP, AM, FM, MS | Not tested | Safe RF load, separately authorized configuration, independent calibrated RF measurement |
