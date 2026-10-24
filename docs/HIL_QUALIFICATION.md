@@ -1,6 +1,6 @@
 # VP-8122A — physical HIL qualification checklist
 
-**State: NOT EXECUTED / BLOCKED.** Use an actual VP-8122A and qualified GP-IB interface. Unattended RF operation is not authorized merely by offline tests.
+**State: NOT EXECUTED / BLOCKED FOR PHYSICAL QUALIFICATION.** Use an actual VP-8122A and qualified GP-IB interface. Unattended RF operation is not authorized merely by offline tests.
 
 1. Record instrument serial and revision; PC OS, Python, PyVISA, VISA backend, GPIB controller type/firmware, selected VISA resource, driver version and manual edition/page.
 2. With load properly terminated and external RF measurement instrument attached, prove the actual remote OFF command (`APOF` candidate) has the intended RF effect. Record RF residual, minimum-safe output and independent OFF confirmation. Stop if not verified.
@@ -36,3 +36,8 @@ The offline suite covers the `VP8122A → ScpiClient → VisaTransport → PyVIS
 8. Attach signed raw GPIB captures, independent RF measurement results, operator, thresholds, environment and known discrepancies. Mark each requirement PASS / FAIL / NOT_TESTED / INCONCLUSIVE without promoting inferred OFF into confirmed OFF.
 
 Do **not** run the HIL suite in GitHub Actions or an unattended runner.
+
+
+## v0.2.5 — safe HIL readback-only entry point
+
+See [HIL automation runbook](HIL_AUTOMATION.md) and [automatic command verification task](../task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md). The newly introduced TM0/TM1/TM2 HIL smoke test explicitly **does not** send APOF, APON or configuration commands; it disconnects by closing the core transport rather than VP8122A.close(). This avoids issuing an unqualified RF mutation during protocol-only tests. Physical OFF validation is a **separate**, more privileged and independently measured phase; the older checklist's proposed close-time APOF check must not be conflated with the readback-only suite. No HIL results have been obtained.
