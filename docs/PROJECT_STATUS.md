@@ -66,3 +66,10 @@ See [native command reference](../Doc/GPIB/COMMAND_REFERENCE.md), the [README fe
 Issue #5 remains open. Before RF hardware qualification, document exact instrument revision, operator authorization, GPIB resource/controller, independent RF measurement, test thresholds and safe physical abort. Exercise read-only reconnaissance first, then explicitly authorized RF verification. Do not interpret transport writes, a green mock suite or the `OFF_UNCONFIRMED` software state as proof that the signal generator is physically off.
 
 **Status rule:** A software-integrated driver is not an RF-qualified instrument driver until the separate physical bench gates pass.
+
+
+## HIL automation development v0.2.6 — 2026-10-24
+
+- Added **software-tested** explicit authorization gates, native TM0/TM1/TM2 readback HIL harness and evidence support, with SCPI/RF mutation attempts blocked before VISA I/O.
+- New documentation: [HIL automation runbook](HIL_AUTOMATION.md) and [full staged task](../task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md).
+- **Physical HIL remains NOT EXECUTED**. Actual EOI, TM status meaning and independently measured RF OFF are still release blockers. v0.2.5 was a documentation-only status update; v0.2.6 adds the HIL harness.
