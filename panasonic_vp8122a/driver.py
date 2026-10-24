@@ -235,13 +235,16 @@ class VP8122A:
             except ImportError as exc:
                 raise UnsupportedOperation('pyvisa required for GTL') from exc
             try:
-                inst.control_ren(RENLineOperation.address_gtl)
+                result = inst.control_ren(RENLineOperation.address_gtl)
+                if isinstance(result, int) and result < 0:
+                    raise UnsupportedOperation(f'GPIB GTL reported VISA failure {result}')
             except Exception as exc:
                 raise TransportError('GPIB return-to-local failed') from exc
 
     def close(self, *, return_local: bool = False) -> None:
         with self._lock:
             failure: Exception | None = None
+            had_connection = self.connected
             if self.connected:
                 try:
                     self.output_off()
@@ -266,7 +269,8 @@ class VP8122A:
                 finally:
                     self._rm = None
                     self._owns_rm = False
-            self.state = 'DISCONNECTED' if failure is None else 'DISCONNECTED_RF_UNKNOWN'
+            self.state = ('DISCONNECTED_RF_UNKNOWN' if failure is not None else
+                          'DISCONNECTED_OFF_UNCONFIRMED' if had_connection else 'DISCONNECTED')
             if failure is not None:
                 raise UnsafeStateError('Close finished with unresolved output/bus error') from failure
 
