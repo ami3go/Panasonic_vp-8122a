@@ -244,7 +244,7 @@
         "CRLF": "41504f460d0a"
       },
       "side_effect_risk": "RF_CONFIG",
-      "required_phase": "ACTIVE_RF_MEASURED",
+      "required_phase": "DEDICATED_APPROVAL",
       "builder": "level_dbm/level_dbuv/impedance/output",
       "verification_method": "RF_POWER_METER",
       "physical_hil_status": "NOT_TESTED",
@@ -370,7 +370,7 @@
         "CRLF": "4c454f460d0a"
       },
       "side_effect_risk": "RF_CONFIG",
-      "required_phase": "ACTIVE_RF_MEASURED",
+      "required_phase": "DEDICATED_APPROVAL",
       "builder": null,
       "verification_method": "RF_POWER_METER",
       "physical_hil_status": "NOT_TESTED",
@@ -593,7 +593,7 @@
       "variant": "SOURCE",
       "manual_image": "FM.png",
       "manual_reference": "Table 4-25",
-      "syntax_and_limits": "FMT1/FMT4/FMXXD (use FMXD)",
+      "syntax_and_limits": "FMT1/FMT4/FMXD",
       "example_word": "FMT1",
       "expected_host_tx_hex": {
         "EOI": "464d5431",
