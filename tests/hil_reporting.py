@@ -66,6 +66,17 @@ def load_matrix(path: Path = MATRIX_PATH) -> dict[str, Any]:
             raise MatrixError(f"unverified fixture claims physical qualification: {cid}")
         if not case.get("manual_image") or not case.get("manual_reference"):
             raise MatrixError(f"missing command provenance: {cid}")
+        if case.get("offline_implementation") not in ("ENCODED", "MISSING"):
+            raise MatrixError(f"invalid builder coverage status: {cid}")
+        if (case["offline_implementation"] == "ENCODED") != bool(case.get("builder")):
+            raise MatrixError(f"unsupported builder coverage claim: {cid}")
+        response = case.get("expected_response")
+        if not isinstance(response, dict) or response.get("literal_bytes_known") is not False:
+            raise MatrixError(f"undocumented response claim: {cid}")
+        criteria = case.get("acceptance_criteria")
+        if (not isinstance(criteria, dict)
+                or criteria.get("allow_physical_pass_without_signed_bench_evidence") is not False):
+            raise MatrixError(f"unsafe physical acceptance rule: {cid}")
         word = case.get("example_word")
         wire = case.get("expected_host_tx_hex")
         if word is None:
@@ -173,6 +184,9 @@ def build_report(matrix: dict[str, Any], observations: list[dict[str, Any]],
             "risk": case["side_effect_risk"],
             "required_phase": case["required_phase"],
             "offline_golden_vector": case["example_word"] is not None,
+            "offline_implementation": case["offline_implementation"],
+            "expected_response": case["expected_response"],
+            "acceptance_criteria": case["acceptance_criteria"],
             "source": f"{case['manual_image']} ({case['manual_reference']})",
             "physical_hil_status": status,
             "observation_count": len(found),
@@ -204,6 +218,7 @@ def write_reports(report: dict[str, Any], output_dir: Path) -> dict[str, Path]:
     import io
     buf = io.StringIO()
     fields = ("case_id", "family", "risk", "required_phase",
+              "offline_implementation",
               "offline_golden_vector", "physical_hil_status",
               "observation_count", "source", "notes")
     writer = csv.DictWriter(buf, fieldnames=fields, extrasaction="ignore")
@@ -212,10 +227,10 @@ def write_reports(report: dict[str, Any], output_dir: Path) -> dict[str, Path]:
     md = ["# Panasonic VP-8122A native GPIB qualification",
           "", f"Run: {report['run_id']}", "",
           "**No physical RF/EOI qualification recorded.**", "",
-          "| Case | Offline vector | Physical HIL | Observations |",
-          "|---|---|---|---|"]
+          "| Case | Builder | Offline vector | Physical HIL | Observations |",
+          "|---|---|---|---|---|"]
     for row in report["cases"]:
-        md.append(f"| {row['case_id']} | {'YES' if row['offline_golden_vector'] else 'NO'} | "
+        md.append(f"| {row['case_id']} | {row['offline_implementation']} | {'YES' if row['offline_golden_vector'] else 'NO'} | "
                   f"{row['physical_hil_status']} | {row['observation_count']} |")
     root = ET.Element("testsuite", name="vp8122a_native_hil",
                       tests=str(len(report["cases"])),
