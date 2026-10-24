@@ -16,6 +16,7 @@ import re
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from panasonic_vp8122a import __version__ as DRIVER_VERSION
 from panasonic_vp8122a.native import encode_program_word
 
 FAMILIES = frozenset((
@@ -196,7 +197,8 @@ def build_report(matrix: dict[str, Any], observations: list[dict[str, Any]],
     return {
         "schema_version": 1, "run_id": run_id,
         "generated_utc": datetime.now(timezone.utc).isoformat(),
-        "driver_baseline": matrix["driver_baseline"],
+        "driver_version": DRIVER_VERSION,
+        "matrix_source_baseline": matrix["driver_baseline"],
         "source_reference": matrix["source"],
         "physical_qualified_families": [],
         "qualification_warning": "OFFLINE FIXTURES/OBSERVATIONS; NO PHYSICAL HIL PASS. RF, EOI and interlocks not independently qualified.",
