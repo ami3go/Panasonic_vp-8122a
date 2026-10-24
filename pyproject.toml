@@ -20,7 +20,7 @@ include = ["panasonic_vp8122a*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --strict-markers -m not_hardware"
+addopts = "-q --strict-markers -m 'not hardware'"
 timeout = 30
 session_timeout = 600
 markers = ["hardware: requires an authorized physical GPIB RF bench", "visa_sim: PyVISA simulated integration", "property: Hypothesis properties"]
