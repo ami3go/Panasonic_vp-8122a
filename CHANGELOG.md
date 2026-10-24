@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3 — 2026-10-24
+- Add staged, repository-verified VP-8122A → scpi-driver-core implementation task with strict native GP-IB isolation, RF safety gates, API compatibility, watchdog regression tests, and conditional core PR requirements.
+- Documentation/task-only change; the runtime migration is **not** implemented and HIL remains unqualified.
+
 ## 0.2.2 — 2026-10-24
 - Transcribe 18 readable VP-8122A manual excerpts from Doc/GPIB into a source-linked native-command and GPIB interface reference.
 - Add the 22-family implementation coverage table and explicit gaps to README.
