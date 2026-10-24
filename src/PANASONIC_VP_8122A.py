@@ -1,362 +1,103 @@
-import pyvisa # PyVisa info @ http://PyVisa.readthedocs.io/en/stable/
-#import serial.tools.list_ports
-#import serial
-import time
+"""Compatibility layer for the historical ``src.PANASONIC_VP_8122A`` path.
+
+Modern callers should use ``panasonic_vp8122a``. Raw command execution requires
+explicit ``authorized_raw=True`` because older scripts may energize RF.
+"""
+from __future__ import annotations
+
+from types import SimpleNamespace
+from panasonic_vp8122a import VP8122A, NativeCommands, UnsafeStateError
+from panasonic_vp8122a.protocol import number
 
 
-#It is recommended to use a minimum delay of 250ms between two commands
-def delay(time_in_sec=0.25):
-    time.sleep(time_in_sec)
-
-## Number of Points to request
-USER_REQUESTED_POINTS = 1000
-    ## None of these scopes offer more than 8,000,000 points
-    ## Setting this to 8000000 or more will ensure that the maximum number of available points is retrieved, though often less will come back.
-    ## Average and High Resolution acquisition types have shallow memory depth, and thus acquiring waveforms in Normal acq. type and post processing for High Res. or repeated acqs. for Average is suggested if more points are desired.
-    ## Asking for zero (0) points, a negative number of points, fewer than 100 points, or a non-integer number of points (100.1 -> error, but 100. or 100.0 is ok) will result in an error, specifically -222,"Data out of range"
-
-## Initialization constants
-INSTRUMENT_VISA_ADDRESS = 'USB0::0x03EB::0x2065::GPIB_02_55137303031351900211::INSTR' # Get this from Keysight IO Libraries Connection Expert
-    ## Note: sockets are not supported in this revision of the script (though it is possible), and PyVisa 1.8 does not support HiSlip, nor do these scopes.
-    ## Note: USB transfers are generally fastest.
-    ## Video: Connecting to Instruments Over LAN, USB, and GPIB in Keysight Connection Expert: https://youtu.be/sZz8bNHX5u4
-
-# any read rerun the status string divided by space
-# FR87.50000MZ AP0.0DB EMOF COON CO0.0 AP50 MS01 AM30.0 AMOF AMT1 FM40.0 FMON FMT1 MS100PC PR0 PL0.0 PLOF SCOF NPOF DR30 AS0 NT0.20 P1D0 P2D0
-
-GLOBAL_TOUT =  10 # IO time out in milliseconds
+def _val(fn):
+    return SimpleNamespace(val=fn)
 
 
-def range_check(val, min, max, val_name):
-    if val > max:
-        print(f"Wrong {val_name}: {val}. Max value should be less then {max}")
-        val = max
-    if val < min:
-        print(f"Wrong {val_name}: {val}. Should be >= {min}")
-        val = min
-    return val
+def _switch(prefix):
+    return SimpleNamespace(on=lambda: prefix+'ON', off=lambda: prefix+'OF')
 
 
-class com_interface:
-    def __init__(self):
-        # Commands Subsystem
-        # this is the list of Subsystem commands
-        # super(communicator, self).__init__(port="COM10",baudrate=115200, timeout=0.1)
-        self.rm = pyvisa.ResourceManager()
-        self.res_name = None
-        print(self.rm)
-        self.inst = None
-
-        self.cmd = storage()
-
-    def init(self):
-        #  Int is getting the list of available resources
-        #  if there such resource and store it and open
-        #  in order to check init will print "query("*IDN?")" responce
-
-        rm_list = self.rm.list_resources()
-        i = 0
-        for item in rm_list:
-            if INSTRUMENT_VISA_ADDRESS in item:
-                self.res_name = item
-        self.inst = self.rm.open_resource(self.res_name)
-        # self.inst.set_visa_attribute(pyvisa.constants.VI_ATTR_SEND_END_EN, 1)
-        # self.inst.write_termination = ""
-        # self.inst.timeout = 2000 # timeout in ms
-        print("Connected to: ", self.inst.query("*IDN?"))
-
-
-
-    def send(self, txt):
-        # will put sending command here
-        # print(f'Sending: {txt}')
-        self.inst.write(txt)
-        delay()
-
-    # def read(self, txt):
-    #     # will put sending command here
-    #     # print(f'Sending: {txt}')
-    #     self.inst.write(txt)
-    #     delay()
-
-    def query(self, cmd_str):
-        # delay and retry in case of old device with slow processing time
-        # cycle will make 10 attempts before everything will get crashed.
-        i = 0
-        for i in range(10):
-            try:
-                # debug print to check how may tries
-                #print("trying",i)
-                return_val = self.inst.query(cmd_str)
-                delay()  # regular delay according to datasheet before next command
-                return return_val  # if reading was successful methods will return the value
-            # in case of any error during receiving
-            # it will wait for 5 sec and print try counter
-            except:
-                print("VI_ERROR_TMO, retry:", i)
-                delay(5)
-
-
-    def disconnect(self):
-        self.send(self.cmd.go_to_local.str())
-
-
-##################################################################
-# *******  service classes to reduce coding  *********************
-##################################################################
-
-class str3:
-    def __init__(self, prefix):
-        self.prefix = prefix
-        self.cmd = self.prefix
-
-    def str(self):
-        return self.cmd
-
-
-class dig_param3:
-    def __init__(self, prefix, min, max, ending=""):
-        self.prefix = prefix
-        self.cmd = self.prefix
-        self.max = max
-        self.min = min
-        self.ending = ending
-
-    def val(self, count=0):
-        count = range_check(count, self.min, self.max, "MAX count")
-        return f'{self.cmd} {count}{self.ending}'
-
-
-# class on_off:
-#     def __init__(self, prefix):
-#         self.prefix = prefix
-#         self.cmd = self.prefix
-#         self.on = str3(self.prefix + " ON")
-#         self.off = str3(self.prefix + " OF")
-#         self.value = dig_param3(self.prefix)
-
-class on_off:
-    def __init__(self, prefix):
-        self.prefix = prefix
-        self.cmd = self.prefix
-
-    def on(self):
-        return self.prefix + " ON"
-
-    def off(self):
-        return self.prefix + " OF"
-
-class up_down:
-    def __init__(self, prefix):
-        self.prefix = prefix
-        self.cmd = self.prefix
-
-    def up(self):
-        return self.prefix + " UP"
-
-    def down(self):
-        return self.prefix + " DN"
-
-
-class t1_t4_ext:
-    def __init__(self, prefix):
-        self.prefix = prefix
-        self.cmd = self.prefix
-
-    def set400Hz(self):
-        return self.prefix + " T4"
-
-    def set1kHz(self):
-        return self.prefix + " T1"
-
-    def setExternal(self):
-        return self.prefix + " XD"
-
-
-class on_off_set:
-    def __init__(self, prefix, min, max):
-        self.prefix = prefix
-        self.cmd = self.prefix
-        self.set = dig_param3(self.prefix, min, max)
-
-    def on(self):
-        return self.prefix + " ON"
-
-    def off(self):
-        return self.prefix + " OF"
-
-##################################################################
-# *******  main class with high level key function list  *********
-##################################################################
+def _modulation(prefix):
+    return SimpleNamespace(
+        set=_val(NativeCommands.am_depth if prefix=='AM' else NativeCommands.fm_deviation_khz),
+        on=lambda: prefix+'ON', off=lambda: prefix+'OF',
+        set1kHz=lambda: prefix+'T1', set400Hz=lambda: prefix+'T4',
+        setExternal=lambda: prefix+'XD')
 
 
 class storage:
     def __init__(self):
-        self.cmd = None
-        self.prefix = None
-        self.go_to_local = str3("GTL")
-        self.control_out = control_output("CO")
-        self.fm = modulation("FM", 0, 300)
-        self.am = modulation("AM", 0, 125)
-        self.pilot_signal = on_off_set("PL", 0, 19.9)
-        self.total_fm_deviation = dig_param3("FT", 0, 402)
-        self.composite_sign_out_level = dig_param3("LV", 0, 9990)
-        self.output = output("AP")
-        self.freq = frequency("FR")
-        self.main_and_sub_ch = main_and_sub_ch()
-        self.neg_peak_clipper = on_off("NP")
-        self.fm_stereo_pre_emphasis = fm_stereo_pre_emphasis()
+        self.go_to_local = SimpleNamespace(str=lambda: 'GTL')
+        self.am = _modulation('AM')
+        self.fm = _modulation('FM')
+        self.control_out = SimpleNamespace(
+            on=lambda: 'COON', off=lambda: 'COOF',
+            up=lambda: 'COUP', down=lambda: 'CODN',
+            set=_val(lambda x: 'CO' + number(x, lower='0', upper='10', places=1, name='continuous_control')))
+        self.output = SimpleNamespace(
+            on=lambda: 'APON', off=lambda: 'APOF',
+            set_dBm=_val(NativeCommands.level_dbm),
+            set_dBuV=_val(NativeCommands.level_dbuv),
+            set_imp_50R=lambda: NativeCommands.impedance(50),
+            set_imp_75R=lambda: NativeCommands.impedance(75))
+        self.freq = SimpleNamespace(
+            MHz=_val(lambda x: NativeCommands.frequency_hz(_to_hz(x, 1_000_000))),
+            kHz=_val(lambda x: NativeCommands.frequency_hz(_to_hz(x, 1_000))))
+        self.pilot_signal = SimpleNamespace(on=lambda: 'PLON', off=lambda: 'PLOF',
+            set=_val(lambda x: NativeCommands.pilot(True,x)[0]))
+        self.neg_peak_clipper = _switch('NP')
+        self.total_fm_deviation = _val(NativeCommands.total_fm_deviation)
+        self.composite_sign_out_level = _val(NativeCommands.composite_level_mv)
+        self.fm_stereo_pre_emphasis = SimpleNamespace(
+            OFF=lambda: NativeCommands.preemphasis(None),
+            set_25uS=lambda: NativeCommands.preemphasis(25),
+            set_50uS=lambda: NativeCommands.preemphasis(50),
+            set_75uS=lambda: NativeCommands.preemphasis(75))
+        self.main_and_sub_ch = SimpleNamespace(
+            **{key: (lambda k=key: NativeCommands.stereo(k)) for key in
+               ('OFF','MONO_INT','L_EQ_R_INT','L_INT','R_INT','L_MINUS_R_INT',
+                'MONO_EXT','L_EQ_R_EXT','L_EXT','R_EXT','L_MINUS_R_EXT','L_R_EXT')})
 
 
-##################################################################
-# *******                   hierarchical classes         *********
-##################################################################
+def _to_hz(value, multiplier):
+    from decimal import Decimal, InvalidOperation
+    if isinstance(value, (str, bool)):
+        raise ValueError('frequency must be numeric')
+    try:
+        hz = Decimal(str(value)) * multiplier
+    except (InvalidOperation, TypeError) as exc:
+        raise ValueError('invalid frequency') from exc
+    if not hz.is_finite() or hz != hz.to_integral_value():
+        raise ValueError('frequency must resolve to whole hertz')
+    return int(hz)
 
 
-class control_output(on_off, up_down):
-    def __init__(self, prefix):
-        self.prefix = prefix
-        self.cmd = self.prefix
-        self.prefix = self.cmd
-        self.set = dig_param3(self.prefix, 0, 10)
+class com_interface:
+    def __init__(self, resource_name: str, **kwargs):
+        self.cmd = storage()
+        self._driver = VP8122A(resource_name, **kwargs)
 
+    def init(self):
+        self._driver.connect()
+        return self
 
-class modulation(on_off, t1_t4_ext):
-    def __init__(self, prefix, min, max):
-        self.prefix = prefix
-        self.cmd = self.prefix
-        self.prefix = self.cmd
-        self.set = dig_param3(self.prefix, min, max)
+    def send(self, command: str, *, authorized_raw: bool = False):
+        if not authorized_raw:
+            raise PermissionError('Legacy raw send requires authorized_raw=True; use VP8122A.configure() instead')
+        with self._driver._lock:
+            if command == 'GTL':
+                # Historical builder emitted a textual sentinel. IEEE-488 GTL is
+                # bus control, never an ASCII program message.
+                self._driver.return_local()
+            else:
+                self._driver._write(command)
+                self._driver.state = 'UNKNOWN'
 
+    def query(self, cmd_str: str | None = None):
+        if cmd_str not in (None, 'STATUS'):
+            raise ValueError('VP-8122A has no confirmed SCPI query syntax; use status read')
+        return self._driver.read_status()
 
-class output(on_off):
-    # in order to set output COOF + APXY.0DB
-    # first step  CO OF
-    # second setep set amplitude
-    def __init__(self, prefix):
-        self.prefix = prefix
-        self.cmd = self.prefix
-        self.prefix = self.cmd
-        self.set_dBm = dig_param3(self.prefix, -133.0, 19.0, "DM")
-        self.set_dBuV = dig_param3(self.prefix, -26.0, 126.0, "DB")
-        self.set_mV = dig_param3(self.prefix, 0.000050, 2000, "MV")
-        self.set_uV = dig_param3(self.prefix, 0.050, 2000000, "UV")
-
-    def set_imp_50R(self):
-        return self.prefix + " 50"
-
-    def set_imp_75R(self):
-        return self.prefix + " 75"
-
-
-class frequency:
-    def __init__(self, prefix):
-        self.prefix = prefix
-        self.cmd = self.prefix
-        self.prefix = self.cmd
-        self.MHz = dig_param3(self.prefix, 0.01000, 280.00000, "MZ")
-        self.kHz = dig_param3(self.prefix, 10.00000, 280000.00, "KZ")
-
-
-class main_and_sub_ch:
-    def __init__(self):
-        pass
-
-    def OFF(self):
-        return "MS 00"
-
-    def MONO_INT(self):
-        return "MS 01"
-
-    def L_eq_R_INT(self):
-        return "MS 02"
-
-    def L_INT(self):
-        return "MS 03"
-
-    def R_INT(self):
-        return "MS 04"
-
-    def L_eq_minusR_INT(self):
-        return "MS 05"
-
-    def MONO_EXT(self):
-        return "MS 11"
-
-    def L_eq_R_EXT(self):
-        return "MS 12"
-
-    def L_EXT(self):
-        return "MS 13"
-
-    def R_EXT(self):
-        return "MS 14"
-
-    def L_eq_minusR_EXT(self):
-        return "MS 15"
-
-    def L_R_EXT(self):
-        return "MS 17"
-
-
-class fm_stereo_pre_emphasis:
-    def __init__(self):
-        pass
-
-    def OFF(self):
-        return "PR 0"
-
-    def set_25uS(self):
-        return "PR 1"
-
-    def set_50uS(self):
-        return "PR 2"
-
-    def set_75uS(self):
-        return "PR 3"
-
-
-
-
-##################################################################
-# *******  printing supported commands  *********************
-##################################################################
-
-
-if __name__ == '__main__':
-
-    cmd = storage()
-    print("")
-    print("TOP LEVEL")
-    print("*" * 150)
-    print(cmd.control_out.up())
-    print(cmd.control_out.down())
-    print(cmd.control_out.set.val(8.2))
-    print(cmd.control_out.off())
-    print(cmd.am.set1kHz())
-    print(cmd.am.set400Hz())
-    print(cmd.fm.set1kHz())
-    print(cmd.fm.set400Hz())
-    print(cmd.pilot_signal.on())
-    print(cmd.pilot_signal.set.val(10))
-    print(cmd.total_fm_deviation.val(100))
-    print(cmd.composite_sign_out_level.val(500))
-    print(cmd.am.set.val(30))
-    print(cmd.output.off())
-    print(cmd.output.on())
-    print(cmd.output.set_imp_50R())
-    print(cmd.output.set_imp_75R())
-    print(cmd.output.set_dBm.val(20))
-    print(cmd.freq.kHz.val(1500))
-    print(cmd.freq.MHz.val(150))
-    print(cmd.main_and_sub_ch.OFF())
-    print(cmd.main_and_sub_ch.MONO_INT())
-    print(cmd.neg_peak_clipper.on())
-    print(cmd.neg_peak_clipper.off())
-    print(cmd.fm_stereo_pre_emphasis.OFF())
-    print(cmd.fm_stereo_pre_emphasis.set_50uS())
-    print(cmd.output.set_dBm.val(10))
-
-    # inst = com_interface()
-    # inst.init()
-
+    def disconnect(self):
+        self._driver.close()

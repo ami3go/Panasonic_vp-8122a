@@ -1,48 +1,16 @@
-import sys
-sys.path.append('../')
-from src.PANASONIC_VP_8122A import com_interface, storage
+"""Safe setup example. Does not switch on RF unless explicitly authorized."""
+from panasonic_vp8122a import RFProfile, VP8122A
 
 
-def rf_init():
-    rf = com_interface()
-    cmd = storage()
-
-    # Turn on AM modulation at 30%
-    rf.send(cmd.am.set.val(30))
-    rf.send(cmd.am.on())
-
-    # Set amplitude to 20 dBuV
-    # output_level = "AP20.0DB"
-    rf.send(cmd.output.set_dBuV.val(20.0))
-
-    # Set modulation mode to mono
-    # modulation_mode = "MS01"
-    rf.send(cmd.main_and_sub_ch.MONO_INT())
-
-    # Turn on internal modulator at 1 kHz
-    # Could also use external
-    rf.send(cmd.am.set1kHz())
-
-    # Set Frequency to 531 Hz (according to the specific measurement)
-    # frequency = "FR0.531MZ"
-    rf.send(cmd.freq.MHz.val(0.531))
-
-    # Set output impedance to 50 ohm
-    # output_impendace = "AP50"
-    rf.send(cmd.output.set_imp_50R())
-    rf.send(cmd.control_out.on())
-
-def set_freq_MHz(frq_Mhz):
-    rf.send(cmd.control_out.off())
-
-    rf.send(cmd.freq.MHz.val(frq_Mhz))
-
-    rf.send(cmd.control_out.on())
+def rf_init(resource_name: str, *, authorize_rf_on: bool = False) -> None:
+    with VP8122A(resource_name) as rf:
+        # 0.531 MHz is 531 kHz, NOT 531 Hz.
+        rf.configure(RFProfile(frequency_hz=531_000, level_dbuv=20.0,
+                               impedance_ohm=50, am_depth_percent=30.0))
+        if authorize_rf_on:
+            rf.enable_output(authorized=True)
+        # context manager attempts APOF during cleanup, but output is UNCONFIRMED.
 
 
-
-# def rf_init_measurements():
-
-
-if __name__  == '__main__':
-    pass
+if __name__ == '__main__':
+    raise SystemExit('Call rf_init(resource_name) explicitly; see README for HIL cautions.')
