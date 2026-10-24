@@ -179,10 +179,10 @@ def test_parallel_sessions_do_not_interleave_or_deadlock():
 def test_malformed_talker_faults_resource_but_keeps_original_raw_evidence():
     device, transport = create_driver()
     device.connect()
-    transport.feed(b"AP20DB GARBAGE\n")
+    transport.feed(b"AP20DB !BROKEN\n")
     with pytest.raises(Exception):
         device.read_status()
-    assert device.last_status == "AP20DB GARBAGE\n"
+    assert device.last_status == "AP20DB !BROKEN\n"
     assert device.last_native_status is None
     assert transport.state is TransportState.FAULTED
     assert transport.written == b"TM0"
