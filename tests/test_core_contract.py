@@ -230,3 +230,21 @@ def test_legacy_gtl_uses_addressed_operation_not_program_text():
     assert transport.local_count == 1
     assert transport.written == b""
     legacy.disconnect()
+
+
+@pytest.mark.timeout(3)
+def test_profile_budget_includes_shared_core_pacing_wait():
+    transport = MockTransport(timeout_s=0.1)
+    device = VP8122A(
+        "GPIB0::2::INSTR",
+        transport=transport,
+        timeout_ms=100,
+        settle_seconds=0.02,
+        profile_timeout_s=0.002,
+    )
+    device.connect()
+    with pytest.raises(UnsafeStateError):
+        device.configure(RFProfile(531000, 20))
+    assert device.state != "CONFIGURED_OFF_UNCONFIRMED"
+    assert b"APON" not in transport.written
+    device.close()
