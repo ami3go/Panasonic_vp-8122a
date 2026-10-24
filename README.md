@@ -1,10 +1,10 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.3**: offline-tested driver-hardening candidate. **NOT HIL-QUALIFIED**.
+Version **0.2.4**: native-byte transport migration development candidate. **NOT HIL-QUALIFIED**.
 
 The VP-8122A uses legacy GP-IB native program words, **not standard SCPI**. The driver does not send `*IDN?` on connection. It uses compact command candidates consistent with historic messages (`FR...MZ`, `AP...DB`, `APOF`), but command acceptance and RF output safety require an actual VP-8122A and supported GPIB adapter to verify.
 
-**Core migration implementation task:** [Staged VP-8122A native GPIB migration to scpi-driver-core](task/VP8122A_SCPI_DRIVER_CORE_MIGRATION_TASK.md). This is a task specification, not a claim that the core migration is already implemented.
+**Core migration:** using scpi-driver-core v0.1.0.dev12 at the pinned merged commit, through VisaTransport and ScpiClient byte-level APIs. [Implementation specification](task/VP8122A_SCPI_DRIVER_CORE_MIGRATION_TASK.md). RF/HIL qualification is still blocked.
 
 ## Native GPIB command coverage (from `Doc/GPIB/`)
 
@@ -19,18 +19,18 @@ The instrument uses **native GP-IB program codes, not SCPI**. The source-backed 
 | `LE` | Alternative RF level/output header | Missing | `LE` alias not emitted |
 | `EM` | EMF/open-end level display | Missing | `EMON`/`EMOF` not exposed |
 | `CO` | Continuous output-level control | Partial (legacy) | ON/OFF, UP/DN, 0–10 dB in historical builder only; **not RF OFF** |
-| `AM` | AM depth, ON/OFF, source | Partial | **Code accepts 0–100%; manual permits 0–125%** |
-| `FM` | FM deviation, ON/OFF, source | Partial | **Code permits up to 999 kHz; manual maximum is 300 kHz** |
+| `AM` | AM depth, ON/OFF, source | Partial | Manual range 0–125% now enforced; high-level sources remain limited |
+| `FM` | FM deviation, ON/OFF, source | Partial | Manual upper limit 300 kHz now enforced; modes remain partial |
 | `MS` | Main/subchannel mono/stereo modes | Partial | Mode values encoded; M+S ratio and mode combinations incomplete |
 | `PL` | Pilot level and ON/OFF | Partial | Core values encoded; explicit optional `PC` suffix and profile integration absent |
-| `FT` | Total FM deviation | Partial | Manual has three resolution bands; serializer applies uniform 0.1 |
+| `FT` | Total FM deviation | Partial | Three precision bands now encoded; high-level setter missing |
 | `PR` | Pre-emphasis OFF / 25 / 50 / 75 µs | Encoded | No dedicated high-level operation |
 | `SC` | SCA signal ON/OFF | Missing | Not exposed |
 | `LV` | Composite signal output level | Encoded | No dedicated high-level operation |
 | `NP` | Negative peak clipper ON/OFF | Encoded | Source is TM0 status description; HIL acceptance unknown |
 | `RC` | Preset memory recall 00–99 | Missing | Recall can alter output; guard before adding |
 | `ST` | Preset memory store 00–99 | Missing | Nonvolatile write; explicit authorization required |
-| `TM` | Talker mode selection 0/1/2 | Partial | `read_status()` exists, but no `TM` selector |
+| `TM` | Talker mode selection 0/1/2 | Partial | `TM0`/`TM1`/`TM2` selector and bounded native talker read; TM1/TM2 typed grammar pending |
 | `DR` | Relay-drive reverse frequency | Missing | Appears in TM0 output; input grammar not validated |
 | `AS` | Memory auto-sequence mode | Missing | TM0 status only |
 | `NT` | Auto-sequence interval | Missing | TM0 status only |
@@ -55,7 +55,7 @@ with VP8122A('GPIB0::2::INSTR') as rf:
     # RF output is NOT enabled. OFF remains UNCONFIRMED without hardware readback.
 ```
 
-Enabling RF requires a *separate explicit call* to `rf.enable_output(authorized=True)` after `configure`; use only with properly terminated and rated RF connections. Resource name is **never auto-selected**. `read_status()` reads directly in talker mode rather than doing an undocumented write/query. `return_local()` sends a bus-level GPIB GTL operation via VISA, not a text command.
+Enabling RF requires a *separate explicit call* to `rf.enable_output(authorized=True)` after `configure`; use only with properly terminated and rated RF connections. Resource name is **never auto-selected**. `read_status()` explicitly sends native `TM0` to select the talker-mode response, then performs an END-bounded read. The lossless ordered result is `last_native_status`; `status_fields()` retains its historical lossy dictionary API. It never sends `*IDN?` or a SCPI query. `return_local()` sends a bus-level GPIB GTL operation via VISA, not a text command.
 
 ## Safety and known limits
 
@@ -63,10 +63,21 @@ Enabling RF requires a *separate explicit call* to `rf.enable_output(authorized=
 * Strict validation rejects non-finite/out-of-range/unsupported values without silently clamping them. Driver assumes provisional limits adapted from historical source; cross-mode combinations without qualified behavior are rejected.
 * `configure()` sends an OFF candidate first, validates the entire profile before I/O, and attempts OFF again after failures. A failed OFF attempt leaves `UNKNOWN` state. Automatic retries of state-changing commands are forbidden.
 * `close()` attempts RF OFF and closes instrument resources; on failure it raises an error and reports `DISCONNECTED_RF_UNKNOWN`. When caller owns the ResourceManager, it is not closed.
-* PyVISA write/read termination is configurable, defaults to no appended write termination, and **must be qualified on the actual GPIB backend**. The historical 250 ms pacing is provisional and configurable.
+* Native write termination supports EOI-only (default), LF, or CRLF; no arbitrary SCPI separators. The core sends raw bytes with VISA terminations disabled. EOI generation by the selected controller and actual RF safety **must be qualified on hardware**. The historical 250 ms pacing is provisional and configurable.
 
 ## Verification
 
 `python -m pytest -q` runs deterministic transport mocks and serialization/safety checks **without instruments**. Run physical qualification separately with the checklist in [docs/HIL_QUALIFICATION.md](docs/HIL_QUALIFICATION.md).
 
 Original review: [review and 22 findings](task/VP8122A_DEEP_REVIEW_2026-10-24.md). Implemented changes and deferred evidence are tracked in [docs/REMEDIATION_STATUS.md](docs/REMEDIATION_STATUS.md).
+
+## Core migration and CI (v0.2.4 development)
+
+- Core prerequisite: [addressed GTL PR #12](https://github.com/ami3go/scpi-driver-core/pull/12), merged as `1e03b6837f96f200dc28233490639f2f080e1791`.
+- Driver dependency pins that Git commit because this development-version package is not assumed published to PyPI. This requires Git access when installing.
+- Supported operations use `ScpiClient.write_bytes/read_bytes` and `VisaTransport` resource ownership. No `ScpiSession` is instantiated, preventing default `*IDN?` health checks.
+- One native word per write, 255-byte bound including LF/CRLF, ASCII-only and known prefixes. Native TM0 status preserves ordered repeated headers and raw bytes.
+- The legacy `manager_factory` is accepted but core intentionally does **not** close any ResourceManager, even one it retrieves, because PyVISA may share a singleton across instruments.
+- State after uncertain mutation is `UNKNOWN`, and a faulted transport is not automatically reconnected, retried or replayed. No result is a measured RF output level.
+- Verify `pytest -m 'not hardware'` and CI across Python 3.10–3.13. Hardware/HIL remains separately gated.
+

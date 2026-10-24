@@ -17,4 +17,7 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[test]'
       - run: python -m compileall -q panasonic_vp8122a tests
-      - run: python -m pytest -q
+      - name: Offline pytest and coverage (no physical RF bench)
+        run: python -m pytest -q -m 'not hardware' --cov=panasonic_vp8122a --cov-report=term-missing:skip-covered --cov-report=xml
+      - name: Build distribution
+        run: python -m pip wheel . --no-deps --wheel-dir dist

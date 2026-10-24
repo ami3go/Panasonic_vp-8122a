@@ -1,3 +1,10 @@
+## v0.2.4 (development; NOT HIL-qualified) — 2026-10-24
+
+- Add explicit native byte-level GPIB framing (EOI/LF/CRLF), 255-byte boundary enforcement, and ordered TM0 status model preserving repeated prefixes and raw bytes.
+- Correct manual-documented AM upper limit 125%, FM maximum 300 kHz and three-band FT precision. Add TM0/TM1/TM2 mode serializer.
+- Begin migration to core byte transport; addressed GTL prerequisite under scpi-driver-core PR #12.
+- Physical RF safety, command acceptance, EOI and output OFF remain HIL-unqualified.
+
 # Changelog
 
 ## 0.2.3 — 2026-10-24

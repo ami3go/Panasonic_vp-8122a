@@ -1,0 +1,20 @@
+spec: "1.0"
+devices:
+  vp8122a:
+    eom:
+      GPIB INSTR:
+        q: "\n"
+        r: "\n"
+    dialogues:
+      - q: "TM0"
+        r: "FR87.50000MZ AP20DB AP50 COOF APON"
+      - q: "APOF"
+      - q: "FR0.53100MZ"
+      - q: "AP50"
+      - q: "AP20DB"
+      - q: "MS00"
+      - q: "AMOF"
+      - q: "FMOF"
+resources:
+  GPIB::2::INSTR:
+    device: vp8122a
