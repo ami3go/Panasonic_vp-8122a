@@ -1,6 +1,6 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.4**: native-byte transport migration development candidate. **NOT HIL-QUALIFIED**.
+Version **0.2.5**: native-byte transport with gated talker-only HIL verification suite. **NOT HIL-QUALIFIED**.
 
 The VP-8122A uses legacy GP-IB native program words, **not standard SCPI**. The driver does not send `*IDN?` on connection. It uses compact command candidates consistent with historic messages (`FR...MZ`, `AP...DB`, `APOF`), but command acceptance and RF output safety require an actual VP-8122A and supported GPIB adapter to verify.
 
@@ -81,3 +81,12 @@ Original review: [review and 22 findings](task/VP8122A_DEEP_REVIEW_2026-10-24.md
 - State after uncertain mutation is `UNKNOWN`, and a faulted transport is not automatically reconnected, retried or replayed. No result is a measured RF output level.
 - Verify `pytest -m 'not hardware'` and CI across Python 3.10–3.13. Hardware/HIL remains separately gated.
 
+
+
+## Automated native GPIB HIL verification (v0.2.5)
+
+The [physical readback-only HIL suite](tests/test_hil_authorized.py) verifies Panasonic TM0/TM1/TM2 selection and bounded talker responses through the public driver and shared core. It requires manual local bench authorization and never sends SCPI, APOF, APON or RF configuration commands. The test intentionally releases the VISA transport without invoking driver close(), which would transmit the not-yet-electrically-qualified APOF candidate.
+
+The [HIL automation runbook](docs/HIL_AUTOMATION.md) specifies explicit resource/authorization/environment variables, command allowlisting, evidence collection and the safe local command. The [full automated native-command qualification task](task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md) covers future command-family HIL, independently measured RF OFF, spectrum/power measurement, controlled mutating operations, fault injection and reports.
+
+Run offline guards without any instrument using `python -m pytest -q tests/test_hil_guards.py`. Physical tests remain excluded from ordinary CI. **No TM mode, RF output or native family is yet confirmed HIL-qualified on physical hardware.**
