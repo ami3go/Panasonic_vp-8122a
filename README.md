@@ -1,8 +1,43 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.1**: offline-tested driver-hardening candidate. **NOT HIL-QUALIFIED**.
+Version **0.2.2**: offline-tested driver-hardening candidate. **NOT HIL-QUALIFIED**.
 
 The VP-8122A uses legacy GP-IB native program words, **not standard SCPI**. The driver does not send `*IDN?` on connection. It uses compact command candidates consistent with historic messages (`FR...MZ`, `AP...DB`, `APOF`), but command acceptance and RF output safety require an actual VP-8122A and supported GPIB adapter to verify.
+
+## Native GPIB command coverage (from `Doc/GPIB/`)
+
+The instrument uses **native GP-IB program codes, not SCPI**. The source-backed [full command reference and per-variant coverage matrix](Doc/GPIB/COMMAND_REFERENCE.md) transcribes all **18 readable image excerpts** (19 discovered; `FM2.png` returned no image bytes). Coverage means **code representation, not an instrument/HIL pass**.
+
+**Legend:** **Encoded** = all core variants visible in reviewed excerpts are produced by `NativeCommands`; **Partial** = some variants or workflows are absent or supported only by the historical compatibility builder; **Missing** = not implemented in the modern serializer. Even **Encoded** entries remain **not HIL-qualified**.
+
+| Native command family | Instrument function | Driver coverage | Key limitation |
+|---|---|---|---|
+| `FR` | RF frequency in MHz/kHz | Partial | `FR...MZ` encoded; `FR...KZ` absent |
+| `AP` | RF level, ON/OFF, 50/75 Ω | Partial | dBm/dBµV encoded; mV/µV level formats missing |
+| `LE` | Alternative RF level/output header | Missing | `LE` alias not emitted |
+| `EM` | EMF/open-end level display | Missing | `EMON`/`EMOF` not exposed |
+| `CO` | Continuous output-level control | Partial (legacy) | ON/OFF, UP/DN, 0–10 dB in historical builder only; **not RF OFF** |
+| `AM` | AM depth, ON/OFF, source | Partial | **Code accepts 0–100%; manual permits 0–125%** |
+| `FM` | FM deviation, ON/OFF, source | Partial | **Code permits up to 999 kHz; manual maximum is 300 kHz** |
+| `MS` | Main/subchannel mono/stereo modes | Partial | Mode values encoded; M+S ratio and mode combinations incomplete |
+| `PL` | Pilot level and ON/OFF | Partial | Core values encoded; explicit optional `PC` suffix and profile integration absent |
+| `FT` | Total FM deviation | Partial | Manual has three resolution bands; serializer applies uniform 0.1 |
+| `PR` | Pre-emphasis OFF / 25 / 50 / 75 µs | Encoded | No dedicated high-level operation |
+| `SC` | SCA signal ON/OFF | Missing | Not exposed |
+| `LV` | Composite signal output level | Encoded | No dedicated high-level operation |
+| `NP` | Negative peak clipper ON/OFF | Encoded | Source is TM0 status description; HIL acceptance unknown |
+| `RC` | Preset memory recall 00–99 | Missing | Recall can alter output; guard before adding |
+| `ST` | Preset memory store 00–99 | Missing | Nonvolatile write; explicit authorization required |
+| `TM` | Talker mode selection 0/1/2 | Partial | `read_status()` exists, but no `TM` selector |
+| `DR` | Relay-drive reverse frequency | Missing | Appears in TM0 output; input grammar not validated |
+| `AS` | Memory auto-sequence mode | Missing | TM0 status only |
+| `NT` | Auto-sequence interval | Missing | TM0 status only |
+| `P1` | External control port 1 | Missing | TM0 status only; potential external actuation |
+| `P2` | External control port 2 | Missing | TM0 status only; potential external actuation |
+
+**22 header families:** 3 encoded · 9 partial · 10 missing. Native interface commands such as **GTL**, **SDC**, **DCL**, **UNL** and **LLO** are **IEEE-488 bus operations**, not ASCII instrument commands; see the [bus-command section](Doc/GPIB/COMMAND_REFERENCE.md#ieee-488-buscontrol-operations-not-vp-8122a-ascii-commands).
+
+**Message format:** up to 255 ASCII bytes; CRLF, LF or EOI terminator; comma/space permitted between complete program words. The original manual gives `FR1MZ,AP-20DM,FM2.5` as an example. Actual GPIB adapter termination and RF electrical behavior still require bench qualification.
 
 ## Installation
 
