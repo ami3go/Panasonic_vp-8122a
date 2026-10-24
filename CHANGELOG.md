@@ -1,3 +1,11 @@
+## v0.2.5 (software test preparation; NOT HIL-qualified) — 2026-10-24
+
+- Add a fail-closed real-instrument native GPIB HIL readback-only test for TM0/TM1/TM2.
+- Reject hardware HIL on CI, require explicit local authorization, VISA primary address, terminator, operator, serial, controller and evidence directory.
+- Capture requested native bytes, raw replies, ordered status fields and JSON evidence without equating transport observations with measured RF state.
+- Block all RF mutations, generic SCPI probes and ASCII GTL before physical VISA I/O; close only the transport during passive HIL, avoiding the unqualified driver-close APOF.
+- Add offline safety-gate tests, HIL runbook and full staged automated HIL command-verification implementation task. No real hardware tests performed.
+
 ## v0.2.4 (development; NOT HIL-qualified) — 2026-10-24
 
 - Add explicit native byte-level GPIB framing (EOI/LF/CRLF), 255-byte boundary enforcement, and ordered TM0 status model preserving repeated prefixes and raw bytes.
