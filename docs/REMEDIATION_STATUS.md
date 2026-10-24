@@ -1,4 +1,4 @@
-# VP-8122A deep-review remediation status — v0.2.0
+# VP-8122A deep-review remediation status — v0.2.1
 
 Target: `task/VP8122A_DEEP_REVIEW_2026-10-24.md` (reviewed baseline `0bc943e`).
 
