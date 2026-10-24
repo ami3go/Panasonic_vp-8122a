@@ -1,3 +1,11 @@
+## v0.2.6 (HIL test automation; NOT hardware-qualified) — 2026-10-24
+
+- Add fail-closed readback-only physical HIL suite for native TM0/TM1/TM2, with exact authorized host-byte allowlisting and core transport cleanup that avoids unqualified APOF during passive reads.
+- Add CLI bench identity/authorization/timeout/configuration gates and uniquely named JSON evidence preserving raw replies and ordered repeated TM0 fields.
+- Add offline regression tests proving no SCPI probes, RF output mutations or ASCII bus commands can pass the HIL transport allowlist.
+- Add full future automatic native-command HIL implementation task, detailed local runbook and clear separation of talker observations versus independently measured RF state.
+- All hardware behavior, including EOI and RF physical OFF, remains NOT QUALIFIED. Software-only changes.
+
 ## v0.2.5 (documentation-only status update) — 2026-10-24
 
 - Record verified merged native-GPIB migration to scpi-driver-core dev12 and up-to-date project status.
