@@ -174,3 +174,59 @@ def test_parallel_sessions_do_not_interleave_or_deadlock():
     assert not errors
     assert all(not worker.is_alive() for worker in workers)
     assert b"APON" not in ta.written + tb.written
+
+
+def test_malformed_talker_faults_resource_but_keeps_original_raw_evidence():
+    device, transport = create_driver()
+    device.connect()
+    transport.feed(b"AP20DB GARBAGE\n")
+    with pytest.raises(Exception):
+        device.read_status()
+    assert device.last_status == "AP20DB GARBAGE\n"
+    assert device.last_native_status is None
+    assert transport.state is TransportState.FAULTED
+    assert transport.written == b"TM0"
+    with pytest.raises(UnsafeStateError):
+        device.close()
+
+
+def test_outbound_non_native_programs_are_rejected_before_transport():
+    device, transport = create_driver()
+    device.connect()
+    for command in ("*IDN?", "GTL", "OUTP:STAT 1", "FR1MZ\nAPON"):
+        with pytest.raises(ProtocolValueError):
+            device._write(command)
+    assert transport.written == b""
+    device.close()
+
+
+def test_talker_mode_two_returns_raw_without_fake_tm0_decode():
+    device, transport = create_driver()
+    device.connect()
+    transport.feed(b"123\n")
+    assert device.read_status(mode=2) == "123\n"
+    assert device.last_native_status is not None
+    assert device.last_native_status.fields == ()
+    assert transport.written == b"TM2"
+    device.close()
+
+
+def test_legacy_gtl_uses_addressed_operation_not_program_text():
+    from src.PANASONIC_VP_8122A import com_interface
+
+    class AddressedMock(MockTransport):
+        def __init__(self):
+            super().__init__()
+            self.local_count = 0
+
+        def go_to_local_addressed(self):
+            self.local_count += 1
+
+    transport = AddressedMock()
+    legacy = com_interface(
+        "GPIB0::2::INSTR", transport=transport, timeout_ms=100, settle_seconds=0,
+    ).init()
+    legacy.send("GTL", authorized_raw=True)
+    assert transport.local_count == 1
+    assert transport.written == b""
+    legacy.disconnect()
