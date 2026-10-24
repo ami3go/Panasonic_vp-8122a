@@ -209,8 +209,10 @@ class VP8122A:
             with client.operation_lock():
                 try:
                     self.output_off(timeout_s=remaining())
+                    remaining()  # pacing and bus I/O must share a profile budget
                     for command in commands:
                         self._write(command, timeout_s=remaining())
+                        remaining()  # detect overrun inside the core pacing wait
                     self.state = "CONFIGURED_OFF_UNCONFIRMED"
                 except Exception as exc:
                     # Never reopen/fault-recover automatically merely to retry OFF.
