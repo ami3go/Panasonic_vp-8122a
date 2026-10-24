@@ -1,6 +1,6 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.0**: offline-tested driver-hardening candidate. **NOT HIL-QUALIFIED**.
+Version **0.2.1**: offline-tested driver-hardening candidate. **NOT HIL-QUALIFIED**.
 
 The VP-8122A uses legacy GP-IB native program words, **not standard SCPI**. The driver does not send `*IDN?` on connection. It uses compact command candidates consistent with historic messages (`FR...MZ`, `AP...DB`, `APOF`), but command acceptance and RF output safety require an actual VP-8122A and supported GPIB adapter to verify.
 
