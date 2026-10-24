@@ -256,16 +256,25 @@ class VP8122A:
 
                 try:
                     self._write(word, timeout_s=left())
-                    raw = client.read_bytes(
+                    request = (
                         ReadRequest(
+                            mode=ReadMode.UNTIL_TERMINATOR,
+                            terminator=self.read_termination.encode("ascii"),
+                            include_terminator=True,
+                            maximum_size=MAX_TALKER_RESPONSE,
+                        )
+                        if self.read_termination is not None
+                        else ReadRequest(
                             mode=ReadMode.BACKEND_DEFINED_MESSAGE,
                             maximum_size=MAX_TALKER_RESPONSE,
-                        ),
-                        timeout_s=left(),
+                        )
                     )
+                    raw = client.read_bytes(request, timeout_s=left())
+                    self.last_status = raw.decode('ascii', errors='backslashreplace')
                     status = parse_status(raw, mode=mode)
                 except Exception as exc:
                     self.last_native_status = None
+                    self.state = 'UNKNOWN'
                     raise TransportError("GPIB native talker status failed") from exc
                 self.last_status = status.text
                 self.last_native_status = status
