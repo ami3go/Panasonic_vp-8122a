@@ -14,6 +14,10 @@ from .protocol import ProtocolValueError
 MAX_PROGRAM_MESSAGE = 255
 MAX_TALKER_RESPONSE = 1024
 _WORD = re.compile(r"[A-Z][A-Z0-9][A-Z0-9.+-]*\Z", re.ASCII)
+_FAMILIES = frozenset((
+    "FR", "AP", "LE", "EM", "CO", "AM", "FM", "MS", "PL", "FT", "PR",
+    "SC", "LV", "NP", "RC", "ST", "TM", "DR", "AS", "NT", "P1", "P2",
+))
 _FIELD = re.compile(r"([A-Z][A-Z0-9])(.+)\Z", re.ASCII)
 
 
@@ -27,6 +31,8 @@ def encode_program_word(word: str, termination: str = "") -> bytes:
     """Return exactly the native bytes, rejecting raw-message injection."""
     if not isinstance(word, str) or not _WORD.fullmatch(word):
         raise ProtocolValueError("one compact 7-bit ASCII Panasonic program word required")
+    if word[:2] not in _FAMILIES:
+        raise ProtocolValueError("unknown Panasonic native program code family")
     if termination not in ("", "\n", "\r\n"):
         raise ProtocolValueError("termination must be EOI, LF or CRLF")
     payload = (word + termination).encode("ascii")
