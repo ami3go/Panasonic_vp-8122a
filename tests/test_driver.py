@@ -67,6 +67,7 @@ def test_no_idn_and_no_enable_on_connect():
         assert d.state=='CONNECTED_UNKNOWN'
     assert inst.writes==['APOF']
     assert inst.closed
+    assert d.state == 'DISCONNECTED_OFF_UNCONFIRMED'
     assert not rm.closed  # injected external RM is caller-owned
 
 
@@ -153,3 +154,56 @@ def test_close_failure_never_silent():
     with pytest.raises(UnsafeStateError): d.close()
     assert inst.closed
     assert d.state=='DISCONNECTED_RF_UNKNOWN'
+
+
+def test_frequency_140mhz_boundary_and_steps():
+    assert NativeCommands.frequency_hz(140_000_000)=='FR140.00000MZ'
+    assert NativeCommands.frequency_hz(140_000_020)=='FR140.00002MZ'
+    with pytest.raises(ProtocolValueError): NativeCommands.frequency_hz(140_000_010)
+
+
+def test_modulation_resolution_bands():
+    assert NativeCommands.am_depth(30.5)=='AM30.5'
+    with pytest.raises(ProtocolValueError): NativeCommands.am_depth(30.1)
+    assert NativeCommands.fm_deviation_khz(9.99)=='FM9.99'
+    assert NativeCommands.fm_deviation_khz(10.1)=='FM10.1'
+    assert NativeCommands.fm_deviation_khz(100)=='FM100'
+    with pytest.raises(ProtocolValueError): NativeCommands.fm_deviation_khz(10.01)
+    with pytest.raises(ProtocolValueError): NativeCommands.fm_deviation_khz(100.5)
+
+
+def test_no_output_without_preflight():
+    d,inst,_=driver()
+    d.connect()
+    with pytest.raises(UnsafeStateError): d.enable_output(authorized=True)
+    assert inst.writes==[]
+    d.close()
+
+
+def test_partial_connect_cleanup():
+    class BadInstrument(FakeInstrument):
+        def __init__(self):
+            self.bad = False
+            super().__init__()
+            self.bad = True
+        @property
+        def write_termination(self): return None
+        @write_termination.setter
+        def write_termination(self, value):
+            if self.bad: raise ValueError('bad adapter')
+    inst=BadInstrument()
+    rm=FakeRM(inst)
+    d=VP8122A('GPIB0::2::INSTR',resource_manager=rm,settle_seconds=0)
+    from panasonic_vp8122a import TransportError
+    with pytest.raises(TransportError): d.connect()
+    assert inst.closed
+
+
+def test_repeated_close_and_disconnected():
+    d,inst,_=driver()
+    d.close()
+    assert d.state=='DISCONNECTED'
+    d.connect()
+    d.close()
+    d.close()
+    assert inst.writes==['APOF']
