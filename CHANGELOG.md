@@ -1,3 +1,9 @@
+## v0.2.5 (documentation-only status update) — 2026-10-24
+
+- Record verified merged native-GPIB migration to scpi-driver-core dev12 and up-to-date project status.
+- Reconcile deep-review findings and open GitHub issue/PR disposition in docs.
+- No runtime behavior changes; physical GPIB and RF safety remain **NOT HIL-QUALIFIED**.
+
 ## v0.2.4 (development; NOT HIL-qualified) — 2026-10-24
 
 - Add explicit native byte-level GPIB framing (EOI/LF/CRLF), 255-byte boundary enforcement, and ordered TM0 status model preserving repeated prefixes and raw bytes.
