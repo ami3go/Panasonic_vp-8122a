@@ -1,3 +1,11 @@
+## v0.2.7 (native GPIB HIL evidence; software only) — 2026-10-24
+
+- Source-traced 45-variant offline command matrix for all 22 native families; status-only cases cannot be transmitted; bus operations remain separate.
+- Add strict golden EOI/LF/CRLF host-byte validation; reject unsafe phase and forged physical HIL claims.
+- Add guard-band measurement comparison, per-run evidence isolation, and JSON/CSV/Markdown/JUnit XML exports.
+- Add bounded opt-in TM0/TM1/TM2 hardware runner with extra CI denial and per-mode VISA allowlisting, with regression tests.
+- Physical RF frequency/level/modulation, electrical OFF, bus EOI and GTL qualification are still NOT EXECUTED. No active RF runner, preset changes or digital-port writes.
+
 ## v0.2.6 (HIL test automation; NOT hardware-qualified) — 2026-10-24
 
 - Add fail-closed readback-only physical HIL suite for native TM0/TM1/TM2, with exact authorized host-byte allowlisting and core transport cleanup that avoids unqualified APOF during passive reads.
