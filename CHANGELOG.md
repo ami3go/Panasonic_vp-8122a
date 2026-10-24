@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 — 2026-10-24
+- Transcribe 18 readable VP-8122A manual excerpts from Doc/GPIB into a source-linked native-command and GPIB interface reference.
+- Add the 22-family implementation coverage table and explicit gaps to README.
+- Document AM upper-limit (125% manual vs 100% code), FM upper-limit (300 kHz manual vs 999 kHz code), FT precision and missing TM selection as follow-up issues.
+- Documentation-only inventory; **not hardware qualified**.
+
 ## 0.2.1 — 2026-10-24
 - Tighten RF frequency step validation at 140 MHz and AM/FM modulation resolution.
 - Track disconnected-but-OFF-unconfirmed state and verify VISA GTL result.
