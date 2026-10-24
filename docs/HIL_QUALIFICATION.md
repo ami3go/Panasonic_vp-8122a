@@ -36,3 +36,8 @@ The offline suite covers the `VP8122A → ScpiClient → VisaTransport → PyVIS
 8. Attach signed raw GPIB captures, independent RF measurement results, operator, thresholds, environment and known discrepancies. Mark each requirement PASS / FAIL / NOT_TESTED / INCONCLUSIVE without promoting inferred OFF into confirmed OFF.
 
 Do **not** run the HIL suite in GitHub Actions or an unattended runner.
+
+
+## v0.2.6 hardware test entry point — protocol observation only
+
+See [HIL automation runbook](HIL_AUTOMATION.md). The added TM0/TM1/TM2 physical readback-only tests explicitly do **not** send APOF, APON or RF configuration, and do **not** call VP8122A.close(), which would transmit unqualified APOF. Their core transport is released without any RF-off attempt. Separately measured, formally authorized APOF/electrical RF OFF remains a distinct future test phase described in the [full task](../task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md). No physical measurements have been executed.
