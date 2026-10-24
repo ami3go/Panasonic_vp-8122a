@@ -86,8 +86,13 @@ class com_interface:
         if not authorized_raw:
             raise PermissionError('Legacy raw send requires authorized_raw=True; use VP8122A.configure() instead')
         with self._driver._lock:
-            self._driver._write(command)
-            self._driver.state = 'UNKNOWN'
+            if command == 'GTL':
+                # Historical builder emitted a textual sentinel. IEEE-488 GTL is
+                # bus control, never an ASCII program message.
+                self._driver.return_local()
+            else:
+                self._driver._write(command)
+                self._driver.state = 'UNKNOWN'
 
     def query(self, cmd_str: str | None = None):
         if cmd_str not in (None, 'STATUS'):
