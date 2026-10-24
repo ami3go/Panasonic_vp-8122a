@@ -7,7 +7,7 @@
 **Source reference:** [Doc/GPIB/COMMAND_REFERENCE.md](../Doc/GPIB/COMMAND_REFERENCE.md)  
 **Existing HIL checklist:** [docs/HIL_QUALIFICATION.md](../docs/HIL_QUALIFICATION.md)  
 **Initial readback-only suite:** [tests/test_hil_authorized.py](../tests/test_hil_authorized.py) and [tests/hil_support.py](../tests/hil_support.py)  
-**Target version:** increment from the latest actual version on every changed repository; v0.2.5 introduces the guarded readback-only baseline.  
+**Target version:** increment from the latest actual version on every changed repository; v0.2.6 introduces the guarded readback-only baseline.  
 **Qualification status:** No actual VP-8122A HIL measurements have been recorded. Do not imply otherwise.
 
 ## Mission
