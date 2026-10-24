@@ -48,6 +48,15 @@ def execute(*, report_dir: Path, settings: HILSettings) -> int:
         load_talker_observations(settings.evidence_dir, run_id=settings.run_id),
         run_id=settings.run_id,
     )
+    # A failed/expired subprocess may have accessed hardware before termination.
+    # Do not quietly label the selected cases NOT_TESTED when RF/bus state is
+    # uncertain. No automatic remediation command is permitted.
+    if exit_code != 0:
+        selected = {f"TM.{mode}" for mode in settings.modes}
+        for row in report["cases"]:
+            if row["case_id"] in selected and row["physical_hil_status"] == "NOT_TESTED":
+                row["physical_hil_status"] = "INCONCLUSIVE"
+                row["notes"] += "; runner failed or timed out before valid evidence"
     try:
         core_version = metadata.version("scpi-driver-core")
     except metadata.PackageNotFoundError:
