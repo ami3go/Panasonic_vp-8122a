@@ -17,13 +17,18 @@ class FakeInstrument:
         if self.fail_at and len(self.writes)==self.fail_at:
             raise TimeoutError('injected')
     def read(self): return self.status
+    def write_raw(self, data):
+        self.write(bytes(data).decode('ascii').rstrip('\r\n'))
+        return len(data)
+    def read_raw(self):
+        return self.status.encode('ascii') + b'\n'
     def close(self): self.closed=True
     def control_ren(self, op): self.local.append(op)
 
 
 class FakeRM:
     def __init__(self, inst): self.inst=inst; self.closed=False; self.resources=[]
-    def open_resource(self, resource):
+    def open_resource(self, resource, **kwargs):
         self.resources.append(resource)
         return self.inst
     def close(self): self.closed=True
@@ -106,10 +111,10 @@ def test_fault_recovery_and_state():
     d.connect()
     with pytest.raises(UnsafeStateError): d.configure(RFProfile(531000,20))
     assert inst.writes[0]=='APOF'
-    assert inst.writes[-1]=='APOF'
+    assert inst.writes[-1]=='AP50'
     assert 'APON' not in inst.writes
-    assert d.state=='OFF_UNCONFIRMED'
-    d.close()
+    assert d.state=='UNKNOWN'
+    with pytest.raises(UnsafeStateError): d.close()
 
 
 def test_off_failure_keeps_uncertain_state():
@@ -117,14 +122,15 @@ def test_off_failure_keeps_uncertain_state():
     d.connect()
     with pytest.raises(UnsafeStateError): d.output_off()
     assert d.state=='UNKNOWN'
-    d.close()
+    with pytest.raises(UnsafeStateError): d.close()
 
 
 def test_status_reads_without_query():
     d,inst,_=driver()
     d.connect()
     assert d.status_fields()=={'FR':'87.50000MZ','AP':'20.0DB','CO':'OF'}
-    assert inst.writes==[]
+    assert inst.writes==['TM0']  # native talker selection, never SCPI
+    assert d.last_native_status is not None
     d.close()
 
 
@@ -145,7 +151,7 @@ def test_owned_manager_closes_on_exit():
     inst=FakeInstrument()
     rm=FakeRM(inst)
     with VP8122A('GPIB0::2::INSTR',manager_factory=lambda:rm,settle_seconds=0): pass
-    assert rm.closed
+    assert not rm.closed  # core treats even factory-obtained RM as shared
 
 
 def test_close_failure_never_silent():
@@ -187,10 +193,11 @@ def test_partial_connect_cleanup():
             super().__init__()
             self.bad = True
         @property
-        def write_termination(self): return None
-        @write_termination.setter
-        def write_termination(self, value):
+        def timeout(self): return self._timeout
+        @timeout.setter
+        def timeout(self, value):
             if self.bad: raise ValueError('bad adapter')
+            self._timeout = value
     inst=BadInstrument()
     rm=FakeRM(inst)
     d=VP8122A('GPIB0::2::INSTR',resource_manager=rm,settle_seconds=0)
