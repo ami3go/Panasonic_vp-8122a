@@ -39,8 +39,8 @@ class NativeCommands:
     def frequency_hz(hz: int) -> str:
         if isinstance(hz, bool) or not isinstance(hz, int):
             raise ProtocolValueError('frequency_hz must be an integer')
-        if not 10_000 <= hz <= 280_000_000 or hz % 10:
-            raise ProtocolValueError('frequency_hz must be 10000..280000000, divisible by 10')
+        if not 10_000 <= hz <= 280_000_000 or hz % (20 if hz > 140_000_000 else 10):
+            raise ProtocolValueError('frequency_hz requires 10 Hz steps to 140 MHz, 20 Hz steps above 140 MHz')
         mhz = Decimal(hz) / Decimal(1_000_000)
         return f'FR{mhz:.5f}MZ'
 
@@ -66,11 +66,19 @@ class NativeCommands:
 
     @staticmethod
     def am_depth(percent: Number) -> str:
-        return 'AM' + number(percent, lower='0', upper='100', places=1, name='am_depth_percent')
+        text = number(percent, lower='0', upper='100', places=1, name='am_depth_percent')
+        if Decimal(text) % Decimal('0.5'):
+            raise ProtocolValueError('AM depth step must be 0.5 percent')
+        return 'AM' + text
 
     @staticmethod
     def fm_deviation_khz(khz: Number) -> str:
-        return 'FM' + number(khz, lower='0', upper='300', places=1, name='fm_deviation_khz')
+        text = number(khz, lower='0', upper='999', places=2, name='fm_deviation_khz')
+        val = Decimal(text)
+        resolution = Decimal('0.01') if val < 10 else (Decimal('0.1') if val < 100 else Decimal('1'))
+        if val % resolution:
+            raise ProtocolValueError(f'FM deviation step is {resolution} kHz in this band')
+        return 'FM' + text
 
     @staticmethod
     def modulation_enabled(kind: str, enabled: bool) -> str:
