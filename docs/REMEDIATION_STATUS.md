@@ -27,7 +27,7 @@ Current project overview: [PROJECT_STATUS.md](PROJECT_STATUS.md). Original audit
 - [Issue #5](https://github.com/ami3go/Panasonic_vp-8122a/issues/5) **OPEN**: physical GPIB/RF output qualification and safety evidence, mandatory before unattended use.
 - [Issue #6](https://github.com/ami3go/Panasonic_vp-8122a/issues/6) **OPEN**: numeric corrections are implemented in merged v0.2.4; do **not** close until remaining cross-field validation and associated acceptance/evidence are reconciled.
 - [PR #7](https://github.com/ami3go/Panasonic_vp-8122a/pull/7) **OPEN** and overlaps the now-merged command reference. Compare unique contributions and then close/rebase appropriately; do not attempt a conflict merge.
-- Command matrix remains **3 encoded / 9 partial / 10 missing** among 22 documented native header families, with **zero hardware-qualified**.
+- Command matrix remains **6 encoded / 6 partial / 10 missing** among 22 documented native header families, with **zero hardware-qualified**.
 - The scanned `FM2.png` source remains unreadable from the GitHub content API and may contain additional material.
 
 **Disposition:** Software core migration is merged, but the project remains **NOT HIL-QUALIFIED**. The driver cannot be called fully repaired or certified for unattended RF operation until the physical evidence gates pass.

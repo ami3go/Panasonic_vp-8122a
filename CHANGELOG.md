@@ -1,3 +1,10 @@
+## v0.2.7 (serializer coverage; NOT hardware-qualified) — 2026-10-25
+
+- Add `NativeCommands.frequency_khz` (`FRxxKZ`, 10–280000 kHz, same 10/20 Hz step rule as `frequency_hz`).
+- Add `NativeCommands.level_mv` (`APxxMV`, 0.000050–2000 mV) and `level_uv` (`APxxUV`, 0.050–2000000 µV).
+- Add `NativeCommands.continuous_control`, `continuous_step` and `continuous_decrement_db` (`COON`/`COOF`, `COUP`/`CODN`, `CO0`–`CO10`); continuous level control is not RF output OFF.
+- Ranges transcribed from manual tables 4-3, 4-7 and 4-9; golden-vector and Hypothesis tests added. Serializer-only: no high-level driver wiring, no change to RF enable/OFF behaviour. All limits remain NOT HIL-qualified.
+
 ## v0.2.6 (HIL test automation; NOT hardware-qualified) — 2026-10-24
 
 - Add fail-closed readback-only physical HIL suite for native TM0/TM1/TM2, with exact authorized host-byte allowlisting and core transport cleanup that avoids unqualified APOF during passive reads.

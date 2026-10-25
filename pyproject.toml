@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "panasonic-vp8122a"
-version = "0.2.6"
+version = "0.2.7"
 description = "Panasonic VP-8122A legacy GP-IB RF signal generator driver"
 readme = "README.md"
 requires-python = ">=3.10"
