@@ -56,18 +56,18 @@ Values and ranges below are transcribed from the cited manual screenshots. `xx` 
 
 | Family | Native command/data code from local manual | Purpose / constraints | Source | Modern v0.2.2 coverage | Gap / warning |
 |---|---|---|---|---|---|
-| **FR** | `FRxxMZ`, 0.01000–280.00000 MHz | RF frequency in MHz | [4-3](FR.png) | **Partial** — `NativeCommands.frequency_hz()`, used by `RFProfile` | `FRxxKZ` alternate unit not emitted; exact device stepping still pending HIL |
-| **FR** | `FRxxKZ`, 10.00000–280000.00 kHz | RF frequency in kHz | [4-3](FR.png) | **Missing** specific formatter | Hz API serializes using `MZ` only |
-| **AP / LE** | `APxxDM` or `LExxDM`, −133.0–19.0 | Level in dBm | [4-7](AP_LE.png) | **Partial** — `AP` builder | `LE` alias missing |
-| **AP / LE** | `APxxDB` or `LExxDB`, −26.0–126.0 | Level in dBµV | [4-7](AP_LE.png) | **Partial** — `AP` builder, used by `RFProfile` | `LE` alias missing |
-| **AP / LE** | `APxxMV`/`LExxMV`, 0.000050–2000 | Level in mV | [4-7](AP_LE.png) | **Missing** | Voltage-unit builder not present |
-| **AP / LE** | `APxxUV`/`LExxUV`, 0.050–2000000 | Level in µV | [4-7](AP_LE.png) | **Missing** | Voltage-unit builder not present; status section shows a shorter display format |
+| **FR** | `FRxxMZ`, 0.01000–280.00000 MHz | RF frequency in MHz | [4-3](FR.png) | **Covered (serializer)** — `NativeCommands.frequency_hz()`, used by `RFProfile` | Exact device stepping still pending HIL |
+| **FR** | `FRxxKZ`, 10.00000–280000.00 kHz | RF frequency in kHz | [4-3](FR.png) | **Covered (serializer)** — `NativeCommands.frequency_khz()` | HIL pending; no high-level driver method |
+| **AP / LE** | `APxxDM` or `LExxDM`, −133.0–19.0 | Level in dBm | [4-7](AP_LE.png) | **Covered (serializer)** — `NativeCommands.level_dbm()` | `LE` alias not emitted; HIL pending |
+| **AP / LE** | `APxxDB` or `LExxDB`, −26.0–126.0 | Level in dBµV | [4-7](AP_LE.png) | **Covered (serializer)** — `NativeCommands.level_dbuv()`, used by `RFProfile` | `LE` alias not emitted; HIL pending |
+| **AP / LE** | `APxxMV`/`LExxMV`, 0.000050–2000 | Level in mV | [4-7](AP_LE.png) | **Covered (serializer)** — `NativeCommands.level_mv()` | `LE` alias not emitted; HIL pending |
+| **AP / LE** | `APxxUV`/`LExxUV`, 0.050–2000000 | Level in µV | [4-7](AP_LE.png) | **Covered (serializer)** — `NativeCommands.level_uv()` | `LE` alias not emitted; HIL pending |
 | **AP / LE** | `APON`, `APOF` (likewise `LEON`, `LEOF` where applicable) | RF output ON/OFF | [4-7](AP_LE.png) | **Partial** — `APON`/`APOF` via `VP8122A.enable_output()`/`output_off()` | `LE` alternative not emitted; **RF electrical OFF not HIL-qualified** |
 | **AP / LE** | `AP50`, `AP75` (50/75) | RF output impedance | [4-7](AP_LE.png) | **Partial** — AP builder, used by `RFProfile` | `LE` alternative absent; bench behavior pending |
 | **EM** | `EMON` (`EM1`), `EMOF` (`EM0`) | EMF/open-end level display mode | [4-7](AP_LE.png) | **Missing** | Separate from RF ON/OFF |
-| **CO** | `COON`, `COOF` | Continuous attenuation-control function ON/OFF, **not RF output OFF** | [4-9](CO.png) | **Partial, legacy only** — `storage().control_out` | No modern serializer/high-level control |
-| **CO** | `COUP`, `CODN` | Adjust continuous level by 0.1 dB | [4-9](CO.png) | **Partial, legacy only** | Modern API missing |
-| **CO** | `COxx`, 0.0–10.0 dB | Continuous output-level decrement | [4-9](CO.png) | **Partial, legacy only** | Modern API missing |
+| **CO** | `COON`, `COOF` | Continuous attenuation-control function ON/OFF, **not RF output OFF** | [4-9](CO.png) | **Covered (serializer)** — `NativeCommands.continuous_control()` | HIL pending; no high-level driver method |
+| **CO** | `COUP`, `CODN` | Adjust continuous level by 0.1 dB | [4-9](CO.png) | **Covered (serializer)** — `NativeCommands.continuous_step()` | HIL pending; no high-level driver method |
+| **CO** | `COxx`, 0.0–10.0 dB | Continuous output-level decrement | [4-9](CO.png) | **Covered (serializer)** — `NativeCommands.continuous_decrement_db()` | HIL pending; no high-level driver method |
 | **AM** | `AMON`, `AMOF`; `AMT4`, `AMT1`, `AMXD` | AM enable and 400 Hz / 1 kHz / external source | [4-13](AM.png) | **Covered (serializer)** | Source/mode combinations not all in high-level `RFProfile` |
 | **AM** | `AMxx`, 0.0–125% | AM depth | [4-13](AM.png) | **Partial, mismatch** | **Current code rejects 100.5–125%; manual allows up to 125%.** |
 | **FM** | `FMON`, `FMOF`; `FMT4`, `FMT1`, `FMXD` | FM enable and 400 Hz / 1 kHz / external source | [4-25](FM.png) | **Covered (serializer)** | Source selection in high-level profile fixed to internal 1 kHz |

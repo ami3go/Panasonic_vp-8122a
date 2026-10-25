@@ -19,7 +19,7 @@ The native Panasonic VP-8122A driver has completed the *software* migration to t
 | Numeric serializer limits (AM/FM/FT) | CODE FIXED | 125% AM, 300 kHz FM upper bound, piecewise FT precision; **hardware behavior not verified** |
 | RF OFF-first/authorized-ON safeguards | SOFTWARE IMPLEMENTED | No automatic SCPI query, implicit RF ON, or blind mutation retry; physical OFF still unconfirmed |
 | Offline Python regression and CI | PASS AT MERGED PR HEADS | Driver #8 and #4 GitHub Actions successful; core #12 successful. Default HIL tests excluded |
-| Command coverage | INCOMPLETE | 22 documented header families: 3 encoded, 9 partial, 10 missing; 0 families physically qualified |
+| Command coverage | INCOMPLETE | 22 documented header families: 6 encoded, 6 partial, 10 missing; 0 families physically qualified |
 | Full physical GPIB + RF HIL | BLOCKED / NOT RUN | [Issue #5](https://github.com/ami3go/Panasonic_vp-8122a/issues/5) |
 | Earlier AM/FM/FT issue cleanup | PARTIAL / ISSUE STILL OPEN | [Issue #6](https://github.com/ami3go/Panasonic_vp-8122a/issues/6): numerical portions fixed, cross-field/manual/HIL acceptance incomplete |
 | Separate command-documentation PR | OPEN, NOT MERGED | [Driver PR #7](https://github.com/ami3go/Panasonic_vp-8122a/pull/7); superseded/overlapping content in current main; reconcile before closure |
@@ -43,7 +43,7 @@ The native Panasonic VP-8122A driver has completed the *software* migration to t
 | Compact Panasonic native output words | Implemented | Confirm wire/EOI/physical acceptance |
 | TM0 ordered response / preservation of repeated prefixes | Implemented | Qualify actual 25-field status and TM1/TM2 responses |
 | RF profile preflight and guarded enable | Implemented in software | Validate effective RF state electrically |
-| Native program code families | 3 encoded / 9 partial / 10 missing | Prioritized additions with exact-manual golden vectors |
+| Native program code families | 6 encoded / 6 partial / 10 missing | Prioritized additions with exact-manual golden vectors |
 | Preset recall/store and external control | Not available in modern safe API | Needs authorization/interlock design |
 | Unattended RF generation | **NOT PERMITTED / NOT QUALIFIED** | Explicit independently measured safety pass |
 

@@ -1,6 +1,6 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.6**: v0.2.4 native-byte driver migration and v0.2.6 opt-in native GPIB readback-only HIL suite merged to `main` (software-only). **NOT HIL-QUALIFIED**.
+Version **0.2.7**: v0.2.4 native-byte driver migration and v0.2.6 opt-in native GPIB readback-only HIL suite merged to `main` (software-only). v0.2.7 adds FR kHz, AP mV/µV and CO continuous-control serializers. **NOT HIL-QUALIFIED**.
 
 **Current project status:** [Verified implementation, CI, open issues, and HIL blockers](docs/PROJECT_STATUS.md). [Deep-review remediation status](docs/REMEDIATION_STATUS.md).
 
@@ -16,11 +16,11 @@ The instrument uses **native GP-IB program codes, not SCPI**. The source-backed 
 
 | Native command family | Instrument function | Driver coverage | Key limitation |
 |---|---|---|---|
-| `FR` | RF frequency in MHz/kHz | Partial | `FR...MZ` encoded; `FR...KZ` absent |
-| `AP` | RF level, ON/OFF, 50/75 Ω | Partial | dBm/dBµV encoded; mV/µV level formats missing |
+| `FR` | RF frequency in MHz/kHz | Encoded | `FR...MZ` and `FR...KZ` encoded; exact device stepping pending HIL |
+| `AP` | RF level, ON/OFF, 50/75 Ω | Encoded | dBm/dBµV/mV/µV, ON/OFF and 50/75 Ω encoded; `LE` alias separate (see LE row) |
 | `LE` | Alternative RF level/output header | Missing | `LE` alias not emitted |
 | `EM` | EMF/open-end level display | Missing | `EMON`/`EMOF` not exposed |
-| `CO` | Continuous output-level control | Partial (legacy) | ON/OFF, UP/DN, 0–10 dB in historical builder only; **not RF OFF** |
+| `CO` | Continuous output-level control | Encoded | `COON`/`COOF`, `COUP`/`CODN`, `CO0`–`CO10` via `NativeCommands`; no high-level driver method; **not RF OFF** |
 | `AM` | AM depth, ON/OFF, source | Partial | Manual range 0–125% now enforced; high-level sources remain limited |
 | `FM` | FM deviation, ON/OFF, source | Partial | Manual upper limit 300 kHz now enforced; modes remain partial |
 | `MS` | Main/subchannel mono/stereo modes | Partial | Mode values encoded; M+S ratio and mode combinations incomplete |
@@ -39,7 +39,7 @@ The instrument uses **native GP-IB program codes, not SCPI**. The source-backed 
 | `P1` | External control port 1 | Missing | TM0 status only; potential external actuation |
 | `P2` | External control port 2 | Missing | TM0 status only; potential external actuation |
 
-**22 header families:** 3 encoded · 9 partial · 10 missing. Native interface commands such as **GTL**, **SDC**, **DCL**, **UNL** and **LLO** are **IEEE-488 bus operations**, not ASCII instrument commands; see the [bus-command section](Doc/GPIB/COMMAND_REFERENCE.md#ieee-488-buscontrol-operations-not-vp-8122a-ascii-commands).
+**22 header families:** 6 encoded · 6 partial · 10 missing. Native interface commands such as **GTL**, **SDC**, **DCL**, **UNL** and **LLO** are **IEEE-488 bus operations**, not ASCII instrument commands; see the [bus-command section](Doc/GPIB/COMMAND_REFERENCE.md#ieee-488-buscontrol-operations-not-vp-8122a-ascii-commands).
 
 **Message format:** up to 255 ASCII bytes; CRLF, LF or EOI terminator; comma/space permitted between complete program words. The original manual gives `FR1MZ,AP-20DM,FM2.5` as an example. Actual GPIB adapter termination and RF electrical behavior still require bench qualification.
 
