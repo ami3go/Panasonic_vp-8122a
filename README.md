@@ -1,6 +1,6 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.7**: v0.2.4 native-byte driver migration and v0.2.6 opt-in native GPIB readback-only HIL suite merged to `main` (software-only). v0.2.7 adds FR kHz, AP mV/µV and CO continuous-control serializers. **NOT HIL-QUALIFIED**.
+Version **0.2.8**: native GPIB command matrix, automatic talker-only qualification evidence and enhanced safety guards (software only); v0.2.7 added FR kHz, AP mV/µV and CO continuous-control serializers. **NOT PHYSICALLY HIL-QUALIFIED**.
 
 **Current project status:** [Verified implementation, CI, open issues, and HIL blockers](docs/PROJECT_STATUS.md). [Deep-review remediation status](docs/REMEDIATION_STATUS.md).
 
@@ -92,3 +92,26 @@ The [physical talker-only HIL suite](tests/test_hil_authorized.py) can verify th
 [HIL automation runbook](docs/HIL_AUTOMATION.md) · [Full automatic native-command HIL implementation prompt](task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md)
 
 Run safe offline gate tests with `python -m pytest -q tests/test_hil_guards.py`; physical tests are excluded from ordinary CI. A physical talker read, RF electrical OFF, or native command family is **NOT** yet HIL-qualified; running software tests does not change that status.
+
+## Native GPIB HIL verification matrix and reports (v0.2.8)
+
+The [source-traced command matrix](tests/hil/command_matrix.json) records **45 variants across all 22 documented native families**: manual images/sections, offline golden host-byte vectors (EOI/LF/CRLF), serializer coverage, RF-side-effect risks and authorization phases. Status-only and unverified listener codes have **no transmit vectors**. IEEE-488 bus functions are catalogued separately and are never sent as ASCII. This is **offline test coverage, not 45 hardware-tested commands**.
+
+The [matrix/report guard tests](tests/test_hil_matrix_reporting.py) protect against altered/unsupported command vectors, unsafe permission escalation, false physical PASS, calibration uncertainty errors and corrupted evidence. The [HIL runner offline tests](tests/test_hil_runner_offline.py) cover CI denial, mode isolation and nonhardware report generation.
+
+On a locally controlled, separately authorized bench that meets all [HIL runbook](docs/HIL_AUTOMATION.md) prerequisites, the **only** currently executable physical phase remains TM0/TM1/TM2 readback:
+
+```bash
+python -m tests.hil_runner --report-dir "$VP8122A_HIL_EVIDENCE_DIR"
+```
+
+That command runs the native talker pytest suite under a bounded subprocess deadline and automatically creates **JSON, CSV, Markdown and JUnit XML** evidence. It cannot configure or enable RF. The core transport guard blocks all non-selected TM commands before VISA. The software still cannot verify actual GPIB EOI or electrical RF OFF.
+
+Offline reporting (no instrument connection):
+
+```bash
+mkdir -p ./hil-reports
+python -m tests.hil_reporting --evidence-dir ./hil-evidence --output-dir ./hil-reports --run-id approved-run-id
+```
+
+Reports distinguish offline serialization from physical HIL, and use PASS / FAIL / INCONCLUSIVE / NOT_TESTED / UNSUPPORTED without converting a successful write or observed status reply to a physical RF pass. **All 22 families remain physically unqualified.** Independently calibrated RF frequency, amplitude and modulation measurements, physical RF OFF verification, GTL bus capture, and an interlocked active-test phase are future blockers.

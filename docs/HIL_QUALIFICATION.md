@@ -41,3 +41,8 @@ Do **not** run the HIL suite in GitHub Actions or an unattended runner.
 ## v0.2.6 hardware test entry point — protocol observation only
 
 See [HIL automation runbook](HIL_AUTOMATION.md). The added TM0/TM1/TM2 physical readback-only tests explicitly do **not** send APOF, APON or RF configuration, and do **not** call VP8122A.close(), which would transmit unqualified APOF. Their core transport is released without any RF-off attempt. Separately measured, formally authorized APOF/electrical RF OFF remains a distinct future test phase described in the [full task](../task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md). No physical measurements have been executed.
+
+
+## v0.2.8 source-based matrix / reports — SOFTWARE ONLY
+
+The 45-variant native HIL matrix and automatic four-format reports provide traceability of offline golden vectors and separately authorized readback observations. They do not qualify electrical RF behavior. An independent, calibrated frequency/power/modulation reference, proven APOF RF-off measurement, bus EOI/GTL captures, physical interlock feedback, reviewed acceptance limits and authorized active runner remain blockers. No result can be promoted to a physical PASS without those gates.

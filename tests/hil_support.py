@@ -45,7 +45,12 @@ class HILSettings:
     @classmethod
     def from_environment(cls, env: Mapping[str, str] | None = None) -> HILSettings:
         variables = os.environ if env is None else env
-        if variables.get("CI", "").lower() in ("true", "1", "yes"):
+        if (variables.get("CI", "").lower() in ("true", "1", "yes")
+                or variables.get("GITHUB_ACTIONS", "").lower() == "true"
+                or variables.get("GITLAB_CI", "").lower() == "true"
+                or variables.get("TF_BUILD", "").lower() == "true"
+                or variables.get("BUILDKITE", "").lower() == "true"
+                or bool(variables.get("JENKINS_URL"))):
             raise HILGateError("physical HIL is forbidden on CI runners")
         if variables.get("VP8122A_HIL_AUTHORIZED") != AUTHORIZATION:
             raise HILGateError("explicit isolated-bench HIL authorization is required")
@@ -104,12 +109,19 @@ class TalkerOnlyVisaTransport(VisaTransport):
     physical acceptance confirmation. The test never calls any SCPI helper.
     """
 
-    def __init__(self, resource: str, *, termination: str, timeout_s: float) -> None:
+    def __init__(
+        self, resource: str, *, termination: str, timeout_s: float,
+        allowed_modes: tuple[int, ...] = (0, 1, 2),
+    ) -> None:
+        if (not allowed_modes or len(set(allowed_modes)) != len(allowed_modes)
+                or any(type(mode) is not int or mode not in (0, 1, 2)
+                       for mode in allowed_modes)):
+            raise HILGateError("invalid explicit talker-mode allowlist")
         super().__init__(resource, timeout_s=timeout_s)
         self.attempted_bytes: list[bytes] = []
         self._allowed = frozenset(
             encode_program_word(NativeCommands.talker_mode(mode), termination)
-            for mode in (0, 1, 2)
+            for mode in allowed_modes
         )
 
     def write(
@@ -148,6 +160,7 @@ def probe_talker_mode(settings: HILSettings, mode: int) -> tuple[dict, Path]:
         settings.resource,
         termination=settings.termination,
         timeout_s=settings.timeout_ms / 1000,
+        allowed_modes=settings.modes,
     )
     device = VP8122A(
         settings.resource,

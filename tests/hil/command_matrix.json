@@ -1,0 +1,1554 @@
+{
+  "schema_version": 1,
+  "source": "Doc/GPIB/COMMAND_REFERENCE.md",
+  "driver_baseline": "0.2.6",
+  "qualification_policy": "NO physical qualification has occurred. Never transmit examples without separately approved test plan.",
+  "families": [
+    "FR",
+    "AP",
+    "LE",
+    "EM",
+    "CO",
+    "AM",
+    "FM",
+    "MS",
+    "PL",
+    "FT",
+    "PR",
+    "SC",
+    "LV",
+    "NP",
+    "RC",
+    "ST",
+    "TM",
+    "DR",
+    "AS",
+    "NT",
+    "P1",
+    "P2"
+  ],
+  "default_executable_hil_case_ids": [
+    "TM.0",
+    "TM.1",
+    "TM.2"
+  ],
+  "bus_operations": [
+    {
+      "operation": "GTL",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    },
+    {
+      "operation": "REN",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    },
+    {
+      "operation": "SDC",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    },
+    {
+      "operation": "DCL",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    },
+    {
+      "operation": "UNL",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    },
+    {
+      "operation": "LLO",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    },
+    {
+      "operation": "SPE/SPD",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    },
+    {
+      "operation": "GET",
+      "type": "IEEE488_BUS",
+      "default_allowed": false,
+      "physical_hil_status": "NOT_TESTED"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "FR.MHZ",
+      "family": "FR",
+      "variant": "MHZ",
+      "manual_image": "FR.png",
+      "manual_reference": "Table 4-3",
+      "syntax_and_limits": "0.01000–280 MHz; 10/20 Hz steps",
+      "example_word": "FR1MZ",
+      "expected_host_tx_hex": {
+        "EOI": "4652314d5a",
+        "LF": "4652314d5a0a",
+        "CRLF": "4652314d5a0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "frequency_hz",
+      "verification_method": "FREQUENCY_COUNTER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "FR.KHZ",
+      "family": "FR",
+      "variant": "KHZ",
+      "manual_image": "FR.png",
+      "manual_reference": "Table 4-3",
+      "syntax_and_limits": "10.00000–280000.00 kHz",
+      "example_word": "FR1000KZ",
+      "expected_host_tx_hex": {
+        "EOI": "4652313030304b5a",
+        "LF": "4652313030304b5a0a",
+        "CRLF": "4652313030304b5a0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "FREQUENCY_COUNTER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AP.DBM",
+      "family": "AP",
+      "variant": "DBM",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "-133…19 dBm",
+      "example_word": "AP-20DM",
+      "expected_host_tx_hex": {
+        "EOI": "41502d3230444d",
+        "LF": "41502d3230444d0a",
+        "CRLF": "41502d3230444d0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "level_dbm",
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AP.DBUV",
+      "family": "AP",
+      "variant": "DBUV",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "-26…126 dBµV",
+      "example_word": "AP20DB",
+      "expected_host_tx_hex": {
+        "EOI": "415032304442",
+        "LF": "4150323044420a",
+        "CRLF": "4150323044420d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "level_dbuv",
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AP.MV",
+      "family": "AP",
+      "variant": "MV",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "0.000050…2000 mV",
+      "example_word": "AP1MV",
+      "expected_host_tx_hex": {
+        "EOI": "4150314d56",
+        "LF": "4150314d560a",
+        "CRLF": "4150314d560d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AP.UV",
+      "family": "AP",
+      "variant": "UV",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "0.050…2000000 µV",
+      "example_word": "AP100UV",
+      "expected_host_tx_hex": {
+        "EOI": "41503130305556",
+        "LF": "415031303055560a",
+        "CRLF": "415031303055560d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AP.IMPEDANCE",
+      "family": "AP",
+      "variant": "IMPEDANCE",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "50/75 ohm",
+      "example_word": "AP50",
+      "expected_host_tx_hex": {
+        "EOI": "41503530",
+        "LF": "415035300a",
+        "CRLF": "415035300d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "impedance",
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AP.OFF",
+      "family": "AP",
+      "variant": "OFF",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "RF OFF UNCONFIRMED",
+      "example_word": "APOF",
+      "expected_host_tx_hex": {
+        "EOI": "41504f46",
+        "LF": "41504f460a",
+        "CRLF": "41504f460d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "DEDICATED_APPROVAL",
+      "builder": "output",
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": false,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AP.ON",
+      "family": "AP",
+      "variant": "ON",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "RF ON needs separate interlock",
+      "example_word": "APON",
+      "expected_host_tx_hex": {
+        "EOI": "41504f4e",
+        "LF": "41504f4e0a",
+        "CRLF": "41504f4e0d0a"
+      },
+      "side_effect_risk": "RF_ENABLE",
+      "required_phase": "DEDICATED_APPROVAL",
+      "builder": "output",
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": false,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "LE.DBM",
+      "family": "LE",
+      "variant": "DBM",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "-133…19 dBm",
+      "example_word": "LE-20DM",
+      "expected_host_tx_hex": {
+        "EOI": "4c452d3230444d",
+        "LF": "4c452d3230444d0a",
+        "CRLF": "4c452d3230444d0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "LE.DBUV",
+      "family": "LE",
+      "variant": "DBUV",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "-26…126 dBµV",
+      "example_word": "LE20DB",
+      "expected_host_tx_hex": {
+        "EOI": "4c4532304442",
+        "LF": "4c45323044420a",
+        "CRLF": "4c45323044420d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "LE.MV",
+      "family": "LE",
+      "variant": "MV",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "0.000050…2000 mV",
+      "example_word": "LE1MV",
+      "expected_host_tx_hex": {
+        "EOI": "4c45314d56",
+        "LF": "4c45314d560a",
+        "CRLF": "4c45314d560d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "LE.UV",
+      "family": "LE",
+      "variant": "UV",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "0.050…2000000 µV",
+      "example_word": "LE100UV",
+      "expected_host_tx_hex": {
+        "EOI": "4c453130305556",
+        "LF": "4c4531303055560a",
+        "CRLF": "4c4531303055560d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "LE.OFF",
+      "family": "LE",
+      "variant": "OFF",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "RF OFF unconfirmed",
+      "example_word": "LEOF",
+      "expected_host_tx_hex": {
+        "EOI": "4c454f46",
+        "LF": "4c454f460a",
+        "CRLF": "4c454f460d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "DEDICATED_APPROVAL",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": false,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "LE.ON",
+      "family": "LE",
+      "variant": "ON",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "RF ON separately prohibited",
+      "example_word": "LEON",
+      "expected_host_tx_hex": {
+        "EOI": "4c454f4e",
+        "LF": "4c454f4e0a",
+        "CRLF": "4c454f4e0d0a"
+      },
+      "side_effect_risk": "RF_ENABLE",
+      "required_phase": "DEDICATED_APPROVAL",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": false,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "EM.MODE",
+      "family": "EM",
+      "variant": "MODE",
+      "manual_image": "AP_LE.png",
+      "manual_reference": "Table 4-7",
+      "syntax_and_limits": "EMON/EMOF or EM1/EM0; display mode only",
+      "example_word": "EMON",
+      "expected_host_tx_hex": {
+        "EOI": "454d4f4e",
+        "LF": "454d4f4e0a",
+        "CRLF": "454d4f4e0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "CO.ENABLE",
+      "family": "CO",
+      "variant": "ENABLE",
+      "manual_image": "CO.png",
+      "manual_reference": "Table 4-9",
+      "syntax_and_limits": "COON/COOF continuous mode NOT RF ON/OFF",
+      "example_word": "COON",
+      "expected_host_tx_hex": {
+        "EOI": "434f4f4e",
+        "LF": "434f4f4e0a",
+        "CRLF": "434f4f4e0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "CO.UP",
+      "family": "CO",
+      "variant": "UP",
+      "manual_image": "CO.png",
+      "manual_reference": "Table 4-9",
+      "syntax_and_limits": "0.1 dB up",
+      "example_word": "COUP",
+      "expected_host_tx_hex": {
+        "EOI": "434f5550",
+        "LF": "434f55500a",
+        "CRLF": "434f55500d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "CO.DOWN",
+      "family": "CO",
+      "variant": "DOWN",
+      "manual_image": "CO.png",
+      "manual_reference": "Table 4-9",
+      "syntax_and_limits": "0.1 dB down",
+      "example_word": "CODN",
+      "expected_host_tx_hex": {
+        "EOI": "434f444e",
+        "LF": "434f444e0a",
+        "CRLF": "434f444e0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "CO.DECREMENT",
+      "family": "CO",
+      "variant": "DECREMENT",
+      "manual_image": "CO.png",
+      "manual_reference": "Table 4-9",
+      "syntax_and_limits": "0…10 dB",
+      "example_word": "CO1.0",
+      "expected_host_tx_hex": {
+        "EOI": "434f312e30",
+        "LF": "434f312e300a",
+        "CRLF": "434f312e300d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "RF_POWER_METER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AM.ENABLE",
+      "family": "AM",
+      "variant": "ENABLE",
+      "manual_image": "AM.png",
+      "manual_reference": "Table 4-13",
+      "syntax_and_limits": "AMON/AMOF",
+      "example_word": "AMON",
+      "expected_host_tx_hex": {
+        "EOI": "414d4f4e",
+        "LF": "414d4f4e0a",
+        "CRLF": "414d4f4e0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "modulation_enabled",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AM.SOURCE",
+      "family": "AM",
+      "variant": "SOURCE",
+      "manual_image": "AM.png",
+      "manual_reference": "Table 4-13",
+      "syntax_and_limits": "AMT1/AMT4/AMXD",
+      "example_word": "AMT1",
+      "expected_host_tx_hex": {
+        "EOI": "414d5431",
+        "LF": "414d54310a",
+        "CRLF": "414d54310d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "modulation_source",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AM.DEPTH",
+      "family": "AM",
+      "variant": "DEPTH",
+      "manual_image": "AM.png",
+      "manual_reference": "Table 4-13",
+      "syntax_and_limits": "0…125% at 0.5% step",
+      "example_word": "AM30",
+      "expected_host_tx_hex": {
+        "EOI": "414d3330",
+        "LF": "414d33300a",
+        "CRLF": "414d33300d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "am_depth",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "FM.ENABLE",
+      "family": "FM",
+      "variant": "ENABLE",
+      "manual_image": "FM.png",
+      "manual_reference": "Table 4-25",
+      "syntax_and_limits": "FMON/FMOF",
+      "example_word": "FMON",
+      "expected_host_tx_hex": {
+        "EOI": "464d4f4e",
+        "LF": "464d4f4e0a",
+        "CRLF": "464d4f4e0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "modulation_enabled",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "FM.SOURCE",
+      "family": "FM",
+      "variant": "SOURCE",
+      "manual_image": "FM.png",
+      "manual_reference": "Table 4-25",
+      "syntax_and_limits": "FMT1/FMT4/FMXD",
+      "example_word": "FMT1",
+      "expected_host_tx_hex": {
+        "EOI": "464d5431",
+        "LF": "464d54310a",
+        "CRLF": "464d54310d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "modulation_source",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "FM.DEVIATION",
+      "family": "FM",
+      "variant": "DEVIATION",
+      "manual_image": "FM.png",
+      "manual_reference": "Table 4-25",
+      "syntax_and_limits": "0…300 kHz band-dependent steps",
+      "example_word": "FM2.5",
+      "expected_host_tx_hex": {
+        "EOI": "464d322e35",
+        "LF": "464d322e350a",
+        "CRLF": "464d322e350d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "fm_deviation_khz",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "MS.MODE",
+      "family": "MS",
+      "variant": "MODE",
+      "manual_image": "MS.png",
+      "manual_reference": "Table 4-16",
+      "syntax_and_limits": "MS00/01…05/11…15/17",
+      "example_word": "MS01",
+      "expected_host_tx_hex": {
+        "EOI": "4d533031",
+        "LF": "4d5330310a",
+        "CRLF": "4d5330310d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "stereo",
+      "verification_method": "STEREO_MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "MS.RATIO_STATUS",
+      "family": "MS",
+      "variant": "RATIO_STATUS",
+      "manual_image": "MS.png",
+      "manual_reference": "Table 4-16",
+      "syntax_and_limits": "MSxxPC status only; not proven input",
+      "example_word": null,
+      "expected_host_tx_hex": null,
+      "side_effect_risk": "UNVERIFIED_INPUT",
+      "required_phase": "SOURCE_UNVERIFIED",
+      "builder": null,
+      "verification_method": "STEREO_MODULATION_ANALYZER",
+      "physical_hil_status": "UNSUPPORTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "UNVERIFIED_INPUT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": false,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "PL.ENABLE",
+      "family": "PL",
+      "variant": "ENABLE",
+      "manual_image": "PL.png",
+      "manual_reference": "Table 4-31",
+      "syntax_and_limits": "PLON/PLOF",
+      "example_word": "PLON",
+      "expected_host_tx_hex": {
+        "EOI": "504c4f4e",
+        "LF": "504c4f4e0a",
+        "CRLF": "504c4f4e0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "pilot",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "PL.LEVEL",
+      "family": "PL",
+      "variant": "LEVEL",
+      "manual_image": "PL.png",
+      "manual_reference": "Table 4-31",
+      "syntax_and_limits": "0…19.9% optional PC suffix",
+      "example_word": "PL9.9",
+      "expected_host_tx_hex": {
+        "EOI": "504c392e39",
+        "LF": "504c392e390a",
+        "CRLF": "504c392e390d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "pilot",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "FT.DEVIATION",
+      "family": "FT",
+      "variant": "DEVIATION",
+      "manual_image": "FT.png",
+      "manual_reference": "Table 4-34",
+      "syntax_and_limits": "0…402 kHz band precision",
+      "example_word": "FT2.50",
+      "expected_host_tx_hex": {
+        "EOI": "4654322e3530",
+        "LF": "4654322e35300a",
+        "CRLF": "4654322e35300d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "total_fm_deviation",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "PR.PREEMPHASIS",
+      "family": "PR",
+      "variant": "PREEMPHASIS",
+      "manual_image": "PR.png",
+      "manual_reference": "Table 4-36",
+      "syntax_and_limits": "PR0/1/2/3 = OFF/25/50/75 us",
+      "example_word": "PR3",
+      "expected_host_tx_hex": {
+        "EOI": "505233",
+        "LF": "5052330a",
+        "CRLF": "5052330d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "preemphasis",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "SC.ENABLE",
+      "family": "SC",
+      "variant": "ENABLE",
+      "manual_image": "SC.png",
+      "manual_reference": "Table 4-38",
+      "syntax_and_limits": "SCON/SCOF or SC1/SC0; mode restrictions",
+      "example_word": "SCON",
+      "expected_host_tx_hex": {
+        "EOI": "53434f4e",
+        "LF": "53434f4e0a",
+        "CRLF": "53434f4e0d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": null,
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "LV.LEVEL",
+      "family": "LV",
+      "variant": "LEVEL",
+      "manual_image": "LV.png",
+      "manual_reference": "Table 4-40",
+      "syntax_and_limits": "0…9990 mV",
+      "example_word": "LV100",
+      "expected_host_tx_hex": {
+        "EOI": "4c56313030",
+        "LF": "4c563130300a",
+        "CRLF": "4c563130300d0a"
+      },
+      "side_effect_risk": "RF_CONFIG",
+      "required_phase": "ACTIVE_RF_MEASURED",
+      "builder": "composite_level_mv",
+      "verification_method": "MODULATION_ANALYZER",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": true,
+        "approved_tolerance_and_uncertainty_required": true,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "NP.STATUS_ONLY",
+      "family": "NP",
+      "variant": "STATUS_ONLY",
+      "manual_image": "TM0_replay_.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "NPON/NPOF status-derived; no source-verified listener syntax",
+      "example_word": null,
+      "expected_host_tx_hex": null,
+      "side_effect_risk": "UNVERIFIED_INPUT",
+      "required_phase": "SOURCE_UNVERIFIED",
+      "builder": "clipper",
+      "verification_method": "NONE",
+      "physical_hil_status": "UNSUPPORTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "UNVERIFIED_INPUT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": false,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "RC.RECALL",
+      "family": "RC",
+      "variant": "RECALL",
+      "manual_image": "RC_ST.png",
+      "manual_reference": "Table 4-42",
+      "syntax_and_limits": "00…99; may change output",
+      "example_word": "RC00",
+      "expected_host_tx_hex": {
+        "EOI": "52433030",
+        "LF": "524330300a",
+        "CRLF": "524330300d0a"
+      },
+      "side_effect_risk": "NONVOLATILE",
+      "required_phase": "DEDICATED_APPROVAL",
+      "builder": null,
+      "verification_method": "MANUAL_REVIEW",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "ST.STORE",
+      "family": "ST",
+      "variant": "STORE",
+      "manual_image": "RC_ST.png",
+      "manual_reference": "Table 4-42",
+      "syntax_and_limits": "00…99; persistent state mutation",
+      "example_word": "ST00",
+      "expected_host_tx_hex": {
+        "EOI": "53543030",
+        "LF": "535430300a",
+        "CRLF": "535430300d0a"
+      },
+      "side_effect_risk": "NONVOLATILE",
+      "required_phase": "DEDICATED_APPROVAL",
+      "builder": null,
+      "verification_method": "MANUAL_REVIEW",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "DYNAMIC_STATUS_AND_MEASUREMENT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "TM.0",
+      "family": "TM",
+      "variant": "0",
+      "manual_image": "TM0.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "setup-state readback",
+      "example_word": "TM0",
+      "expected_host_tx_hex": {
+        "EOI": "544d30",
+        "LF": "544d300a",
+        "CRLF": "544d300d0a"
+      },
+      "side_effect_risk": "TALKER_SELECT",
+      "required_phase": "TALKER_ONLY",
+      "builder": "talker_mode",
+      "verification_method": "TALKER_RAW",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "NATIVE_TALKER",
+        "mode": 0,
+        "expected_termination": "LF_AND_EOI",
+        "literal_bytes_known": false,
+        "requires_bus_analyzer_for_eoi": true
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "TM.1",
+      "family": "TM",
+      "variant": "1",
+      "manual_image": "TM0.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "total FM deviation readback",
+      "example_word": "TM1",
+      "expected_host_tx_hex": {
+        "EOI": "544d31",
+        "LF": "544d310a",
+        "CRLF": "544d310d0a"
+      },
+      "side_effect_risk": "TALKER_SELECT",
+      "required_phase": "TALKER_ONLY",
+      "builder": "talker_mode",
+      "verification_method": "TALKER_RAW",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "NATIVE_TALKER",
+        "mode": 1,
+        "expected_termination": "LF_AND_EOI",
+        "literal_bytes_known": false,
+        "requires_bus_analyzer_for_eoi": true
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "TM.2",
+      "family": "TM",
+      "variant": "2",
+      "manual_image": "TM0.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "port 2 data readback",
+      "example_word": "TM2",
+      "expected_host_tx_hex": {
+        "EOI": "544d32",
+        "LF": "544d320a",
+        "CRLF": "544d320d0a"
+      },
+      "side_effect_risk": "TALKER_SELECT",
+      "required_phase": "TALKER_ONLY",
+      "builder": "talker_mode",
+      "verification_method": "TALKER_RAW",
+      "physical_hil_status": "NOT_TESTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "ENCODED",
+      "expected_response": {
+        "type": "NATIVE_TALKER",
+        "mode": 2,
+        "expected_termination": "LF_AND_EOI",
+        "literal_bytes_known": false,
+        "requires_bus_analyzer_for_eoi": true
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": true,
+        "native_readback_required": true,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "DR.STATUS_ONLY",
+      "family": "DR",
+      "variant": "STATUS_ONLY",
+      "manual_image": "TM0_replay_.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "DRxx status values -280…280; input grammar unverified",
+      "example_word": null,
+      "expected_host_tx_hex": null,
+      "side_effect_risk": "UNVERIFIED_INPUT",
+      "required_phase": "SOURCE_UNVERIFIED",
+      "builder": null,
+      "verification_method": "NONE",
+      "physical_hil_status": "UNSUPPORTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "UNVERIFIED_INPUT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": false,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "AS.STATUS_ONLY",
+      "family": "AS",
+      "variant": "STATUS_ONLY",
+      "manual_image": "TM0_replay_.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "AS0…AS3 status values; input grammar unverified",
+      "example_word": null,
+      "expected_host_tx_hex": null,
+      "side_effect_risk": "UNVERIFIED_INPUT",
+      "required_phase": "SOURCE_UNVERIFIED",
+      "builder": null,
+      "verification_method": "NONE",
+      "physical_hil_status": "UNSUPPORTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "UNVERIFIED_INPUT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": false,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "NT.STATUS_ONLY",
+      "family": "NT",
+      "variant": "STATUS_ONLY",
+      "manual_image": "TM0_replay_.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "NTxx status 0.10…60.0; input grammar unverified",
+      "example_word": null,
+      "expected_host_tx_hex": null,
+      "side_effect_risk": "UNVERIFIED_INPUT",
+      "required_phase": "SOURCE_UNVERIFIED",
+      "builder": null,
+      "verification_method": "NONE",
+      "physical_hil_status": "UNSUPPORTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "UNVERIFIED_INPUT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": false,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "P1.STATUS_ONLY",
+      "family": "P1",
+      "variant": "STATUS_ONLY",
+      "manual_image": "TM0_replay_.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "port 1 status 0…255, external actuation risk",
+      "example_word": null,
+      "expected_host_tx_hex": null,
+      "side_effect_risk": "EXTERNAL_IO",
+      "required_phase": "SOURCE_UNVERIFIED",
+      "builder": null,
+      "verification_method": "NONE",
+      "physical_hil_status": "UNSUPPORTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "UNVERIFIED_INPUT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": false,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    },
+    {
+      "case_id": "P2.STATUS_ONLY",
+      "family": "P2",
+      "variant": "STATUS_ONLY",
+      "manual_image": "TM0_replay_.png",
+      "manual_reference": "Section 6-9",
+      "syntax_and_limits": "port 2 status 0…255, external actuation risk",
+      "example_word": null,
+      "expected_host_tx_hex": null,
+      "side_effect_risk": "EXTERNAL_IO",
+      "required_phase": "SOURCE_UNVERIFIED",
+      "builder": null,
+      "verification_method": "NONE",
+      "physical_hil_status": "UNSUPPORTED",
+      "evidence_ids": [],
+      "acceptance": "No physical PASS until externally verified with approved bench evidence; source examples are OFFLINE FIXTURES ONLY.",
+      "offline_implementation": "MISSING",
+      "expected_response": {
+        "type": "UNVERIFIED_INPUT",
+        "literal_bytes_known": false
+      },
+      "acceptance_criteria": {
+        "exact_host_bytes_required": false,
+        "native_readback_required": false,
+        "external_measurement_required": false,
+        "approved_tolerance_and_uncertainty_required": false,
+        "allow_physical_pass_without_signed_bench_evidence": false
+      }
+    }
+  ],
+  "coverage_convention": "offline_implementation is builder coverage, not accepted instrument syntax or physical qualification"
+}

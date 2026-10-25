@@ -73,3 +73,8 @@ Issue #5 remains open. Before RF hardware qualification, document exact instrume
 - Added **software-tested** explicit authorization gates, native TM0/TM1/TM2 readback HIL harness and evidence support, with SCPI/RF mutation attempts blocked before VISA I/O.
 - New documentation: [HIL automation runbook](HIL_AUTOMATION.md) and [full staged task](../task/VP8122A_AUTOMATED_NATIVE_GPIB_HIL_TASK.md).
 - **Physical HIL remains NOT EXECUTED**. Actual EOI, TM status meaning and independently measured RF OFF are still release blockers. v0.2.5 was a documentation-only status update; v0.2.6 adds the HIL harness.
+
+
+## v0.2.8 delta — 2026-10-25
+
+Prepared 45 offline HIL variants across 22 manual-documented native families; added source and phase/risk traceability, exact host-byte fixtures, guarded and time-bounded TM-only runner, CI prevention, uncertainty comparison and JSON/CSV/Markdown/JUnit reporting. The v0.2.5 and v0.2.6 baseline statements above are historical. This remains SOFTWARE-ONLY: zero families physically qualified; independent RF/EOI/GTL evidence and active RF HIL remain blocked. Obtain actual head CI results before release claims.
