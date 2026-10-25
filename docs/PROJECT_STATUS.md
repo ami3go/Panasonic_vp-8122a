@@ -19,7 +19,7 @@ The native Panasonic VP-8122A driver has completed the *software* migration to t
 | Numeric serializer limits (AM/FM/FT) | CODE FIXED | 125% AM, 300 kHz FM upper bound, piecewise FT precision; **hardware behavior not verified** |
 | RF OFF-first/authorized-ON safeguards | SOFTWARE IMPLEMENTED | No automatic SCPI query, implicit RF ON, or blind mutation retry; physical OFF still unconfirmed |
 | Offline Python regression and CI | PASS AT MERGED PR HEADS | Driver #8 and #4 GitHub Actions successful; core #12 successful. Default HIL tests excluded |
-| Command coverage | INCOMPLETE | 22 documented header families: 3 encoded, 9 partial, 10 missing; 0 families physically qualified |
+| Command coverage | INCOMPLETE | 22 documented header families: 6 encoded, 6 partial, 10 missing; 0 families physically qualified |
 | Full physical GPIB + RF HIL | BLOCKED / NOT RUN | [Issue #5](https://github.com/ami3go/Panasonic_vp-8122a/issues/5) |
 | Earlier AM/FM/FT issue cleanup | PARTIAL / ISSUE STILL OPEN | [Issue #6](https://github.com/ami3go/Panasonic_vp-8122a/issues/6): numerical portions fixed, cross-field/manual/HIL acceptance incomplete |
 | Separate command-documentation PR | OPEN, NOT MERGED | [Driver PR #7](https://github.com/ami3go/Panasonic_vp-8122a/pull/7); superseded/overlapping content in current main; reconcile before closure |
@@ -43,7 +43,7 @@ The native Panasonic VP-8122A driver has completed the *software* migration to t
 | Compact Panasonic native output words | Implemented | Confirm wire/EOI/physical acceptance |
 | TM0 ordered response / preservation of repeated prefixes | Implemented | Qualify actual 25-field status and TM1/TM2 responses |
 | RF profile preflight and guarded enable | Implemented in software | Validate effective RF state electrically |
-| Native program code families | 3 encoded / 9 partial / 10 missing | Prioritized additions with exact-manual golden vectors |
+| Native program code families | 6 encoded / 6 partial / 10 missing | Prioritized additions with exact-manual golden vectors |
 | Preset recall/store and external control | Not available in modern safe API | Needs authorization/interlock design |
 | Unattended RF generation | **NOT PERMITTED / NOT QUALIFIED** | Explicit independently measured safety pass |
 
@@ -75,6 +75,6 @@ Issue #5 remains open. Before RF hardware qualification, document exact instrume
 - **Physical HIL remains NOT EXECUTED**. Actual EOI, TM status meaning and independently measured RF OFF are still release blockers. v0.2.5 was a documentation-only status update; v0.2.6 adds the HIL harness.
 
 
-## v0.2.7 delta — 2026-10-24
+## v0.2.8 delta — 2026-10-25
 
 Prepared 45 offline HIL variants across 22 manual-documented native families; added source and phase/risk traceability, exact host-byte fixtures, guarded and time-bounded TM-only runner, CI prevention, uncertainty comparison and JSON/CSV/Markdown/JUnit reporting. The v0.2.5 and v0.2.6 baseline statements above are historical. This remains SOFTWARE-ONLY: zero families physically qualified; independent RF/EOI/GTL evidence and active RF HIL remain blocked. Obtain actual head CI results before release claims.

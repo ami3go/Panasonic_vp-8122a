@@ -95,7 +95,7 @@ def test_observation_is_never_lifted_to_physical_pass(tmp_path):
     assert all(p.is_file() for p in output.values())
     loaded = json.loads(output["json"].read_text(encoding="utf-8"))
     assert loaded["talker_observations"][0]["raw"]["raw_rx_hex"] == "4652314d5a0a"
-    assert loaded["driver_version"] == "0.2.7"
+    assert loaded["driver_version"] == "0.2.8"
     assert loaded["matrix_source_baseline"] == "0.2.6"
     with output["csv"].open(encoding="utf-8", newline="") as stream:
         csv_rows = list(csv.DictReader(stream))

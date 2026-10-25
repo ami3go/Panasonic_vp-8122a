@@ -1,4 +1,4 @@
-# Panasonic VP-8122A v0.2.7 — Independent-style Software/HIL Safety Review
+# Panasonic VP-8122A v0.2.8 — Independent-style Software/HIL Safety Review
 
 **Review date:** 2026-10-24  
 **Target branch:** feat/v0.2.7-native-gpib-qualification-evidence  

@@ -142,3 +142,41 @@ class NativeCommands:
         if type(mode) is not int or mode not in (0, 1, 2):
             raise ProtocolValueError('talker mode must be 0, 1, or 2')
         return 'TM' + str(mode)
+
+    @staticmethod
+    def frequency_khz(khz: Number) -> str:
+        """FRxxKZ: 10–280000 kHz. Manual limits, NOT HIL-qualified."""
+        text = number(khz, lower='10', upper='280000', places=2, name='frequency_khz')
+        hz = Decimal(text) * 1000
+        if hz % (20 if hz > 140_000_000 else 10):
+            raise ProtocolValueError("frequency_khz requires 10 Hz steps to 140 MHz, 20 Hz steps above 140 MHz")
+        return 'FR' + text + 'KZ'
+
+    @staticmethod
+    def level_mv(value: Number) -> str:
+        """APxxMV: 0.000050–2000 mV. Manual limits, NOT HIL-qualified."""
+        return 'AP' + number(value, lower='0.000050', upper='2000', places=6, name='level_mv') + 'MV'
+
+    @staticmethod
+    def level_uv(value: Number) -> str:
+        """APxxUV: 0.050–2000000 uV. Manual limits, NOT HIL-qualified."""
+        return 'AP' + number(value, lower='0.050', upper='2000000', places=3, name='level_uv') + 'UV'
+
+    @staticmethod
+    def continuous_control(enabled: bool) -> str:
+        """COON/COOF: continuous level-control function, NOT RF output on/off. Manual limits, NOT HIL-qualified."""
+        if type(enabled) is not bool:
+            raise ProtocolValueError('continuous_control enabled must be bool')
+        return 'COON' if enabled else 'COOF'
+
+    @staticmethod
+    def continuous_step(direction: str) -> str:
+        """COUP/CODN: step the continuous level by 0.1 dB. Manual limits, NOT HIL-qualified."""
+        if direction not in ('UP', 'DN'):
+            raise ProtocolValueError('continuous_step must be UP or DN')
+        return 'CO' + direction
+
+    @staticmethod
+    def continuous_decrement_db(value: Number) -> str:
+        """COxx: 0.0–10.0 dB decrement from the current level. Manual limits, NOT HIL-qualified."""
+        return 'CO' + number(value, lower='0', upper='10', places=1, name='continuous_decrement_db')

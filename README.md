@@ -1,6 +1,6 @@
 # Panasonic VP-8122A — native GPIB RF generator driver
 
-Version **0.2.7**: native GPIB command matrix, automatic talker-only qualification evidence and enhanced safety guards (software only). **NOT PHYSICALLY HIL-QUALIFIED**.
+Version **0.2.8**: native GPIB command matrix, automatic talker-only qualification evidence and enhanced safety guards (software only); v0.2.7 added FR kHz, AP mV/µV and CO continuous-control serializers. **NOT PHYSICALLY HIL-QUALIFIED**.
 
 **Current project status:** [Verified implementation, CI, open issues, and HIL blockers](docs/PROJECT_STATUS.md). [Deep-review remediation status](docs/REMEDIATION_STATUS.md).
 
@@ -16,11 +16,11 @@ The instrument uses **native GP-IB program codes, not SCPI**. The source-backed 
 
 | Native command family | Instrument function | Driver coverage | Key limitation |
 |---|---|---|---|
-| `FR` | RF frequency in MHz/kHz | Partial | `FR...MZ` encoded; `FR...KZ` absent |
-| `AP` | RF level, ON/OFF, 50/75 Ω | Partial | dBm/dBµV encoded; mV/µV level formats missing |
+| `FR` | RF frequency in MHz/kHz | Encoded | `FR...MZ` and `FR...KZ` encoded; exact device stepping pending HIL |
+| `AP` | RF level, ON/OFF, 50/75 Ω | Encoded | dBm/dBµV/mV/µV, ON/OFF and 50/75 Ω encoded; `LE` alias separate (see LE row) |
 | `LE` | Alternative RF level/output header | Missing | `LE` alias not emitted |
 | `EM` | EMF/open-end level display | Missing | `EMON`/`EMOF` not exposed |
-| `CO` | Continuous output-level control | Partial (legacy) | ON/OFF, UP/DN, 0–10 dB in historical builder only; **not RF OFF** |
+| `CO` | Continuous output-level control | Encoded | `COON`/`COOF`, `COUP`/`CODN`, `CO0`–`CO10` via `NativeCommands`; no high-level driver method; **not RF OFF** |
 | `AM` | AM depth, ON/OFF, source | Partial | Manual range 0–125% now enforced; high-level sources remain limited |
 | `FM` | FM deviation, ON/OFF, source | Partial | Manual upper limit 300 kHz now enforced; modes remain partial |
 | `MS` | Main/subchannel mono/stereo modes | Partial | Mode values encoded; M+S ratio and mode combinations incomplete |
@@ -39,7 +39,7 @@ The instrument uses **native GP-IB program codes, not SCPI**. The source-backed 
 | `P1` | External control port 1 | Missing | TM0 status only; potential external actuation |
 | `P2` | External control port 2 | Missing | TM0 status only; potential external actuation |
 
-**22 header families:** 3 encoded · 9 partial · 10 missing. Native interface commands such as **GTL**, **SDC**, **DCL**, **UNL** and **LLO** are **IEEE-488 bus operations**, not ASCII instrument commands; see the [bus-command section](Doc/GPIB/COMMAND_REFERENCE.md#ieee-488-buscontrol-operations-not-vp-8122a-ascii-commands).
+**22 header families:** 6 encoded · 6 partial · 10 missing. Native interface commands such as **GTL**, **SDC**, **DCL**, **UNL** and **LLO** are **IEEE-488 bus operations**, not ASCII instrument commands; see the [bus-command section](Doc/GPIB/COMMAND_REFERENCE.md#ieee-488-buscontrol-operations-not-vp-8122a-ascii-commands).
 
 **Message format:** up to 255 ASCII bytes; CRLF, LF or EOI terminator; comma/space permitted between complete program words. The original manual gives `FR1MZ,AP-20DM,FM2.5` as an example. Actual GPIB adapter termination and RF electrical behavior still require bench qualification.
 
@@ -93,7 +93,7 @@ The [physical talker-only HIL suite](tests/test_hil_authorized.py) can verify th
 
 Run safe offline gate tests with `python -m pytest -q tests/test_hil_guards.py`; physical tests are excluded from ordinary CI. A physical talker read, RF electrical OFF, or native command family is **NOT** yet HIL-qualified; running software tests does not change that status.
 
-## Native GPIB HIL verification matrix and reports (v0.2.7)
+## Native GPIB HIL verification matrix and reports (v0.2.8)
 
 The [source-traced command matrix](tests/hil/command_matrix.json) records **45 variants across all 22 documented native families**: manual images/sections, offline golden host-byte vectors (EOI/LF/CRLF), serializer coverage, RF-side-effect risks and authorization phases. Status-only and unverified listener codes have **no transmit vectors**. IEEE-488 bus functions are catalogued separately and are never sent as ASCII. This is **offline test coverage, not 45 hardware-tested commands**.
 

@@ -1,0 +1,8 @@
+scpi-driver-core[visa] @ git+https://github.com/ami3go/scpi-driver-core.git@1e03b6837f96f200dc28233490639f2f080e1791
+
+[test]
+pytest>=8
+pytest-timeout!=2.5.0,>=2.4
+pytest-cov>=5
+hypothesis>=6.168
+pyvisa-sim>=0.7.1
